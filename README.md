@@ -1,2 +1,2 @@
-# routineplayground
+# LazyScholarPH
 testing lab
