@@ -1,0 +1,2159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Overthinker's Operating System — Lazy Scholar PH</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  /* ===== VARIABLES ===== */
+  :root {
+    --navy: #0D1B2A;
+    --navy-mid: #1A3050;
+    --navy-light: #253F5C;
+    --gold: #C9A84C;
+    --gold-light: #E8CC88;
+    --gold-pale: #F5EDD3;
+    --ivory: #FDFAF4;
+    --white: #FFFFFF;
+    --gray-100: #F8F9FA;
+    --gray-200: #EEF0F3;
+    --gray-400: #9BA3AE;
+    --gray-600: #6B7685;
+    --gray-800: #2D3748;
+    --text-primary: #1A1F2E;
+    --text-secondary: #4A5568;
+    --text-muted: #718096;
+    --accent-teal: #2D6A8A;
+    --page-width: 210mm;
+    --page-height: 297mm;
+    --margin-outer: 20mm;
+    --margin-inner: 18mm;
+  }
+
+  /* ===== RESET ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ===== BASE ===== */
+  html { font-size: 10pt; }
+
+  body {
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    color: var(--text-primary);
+    background: var(--white);
+    line-height: 1.7;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    font-size: 10pt;
+  }
+
+  /* ===== PAGE SETUP ===== */
+  @page {
+    size: A4;
+    margin: 18mm 20mm 20mm 20mm;
+  }
+
+  @page :first { margin: 0; }
+
+  /* ===== PAGE BREAK CONTROLS ===== */
+  .page-break { page-break-after: always; break-after: page; }
+  .no-break { page-break-inside: avoid; break-inside: avoid; }
+  h2, h3 { page-break-after: avoid; break-after: avoid; }
+
+  /* ===== COVER PAGE ===== */
+  .cover {
+    width: 210mm;
+    height: 297mm;
+    background: linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 55%, var(--navy-light) 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 80% 20%, rgba(201,168,76,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 10% 80%, rgba(45,106,138,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cover::after {
+    content: '';
+    position: absolute;
+    top: 40mm; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.4;
+  }
+
+  .cover-inner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 0 20mm;
+    width: 100%;
+  }
+
+  .brand-tag {
+    font-family: 'Inter', sans-serif;
+    font-size: 7.5pt;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12mm;
+    opacity: 0.9;
+  }
+
+  .cover-gold-rule {
+    width: 40mm;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 10mm;
+  }
+
+  .cover-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 34pt;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    margin-bottom: 8mm;
+  }
+
+  .cover-title span {
+    color: var(--gold);
+    display: block;
+  }
+
+  .cover-subtitle {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 13pt;
+    font-weight: 400;
+    font-style: italic;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 0.5px;
+    margin-bottom: 14mm;
+    line-height: 1.5;
+  }
+
+  .cover-divider {
+    width: 60mm;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+    margin: 0 auto 12mm;
+    opacity: 0.5;
+  }
+
+  .cover-series {
+    font-family: 'Inter', sans-serif;
+    font-size: 8pt;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .cover-footer {
+    position: absolute;
+    bottom: 16mm;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 1;
+  }
+
+  .cover-footer-brand {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 11pt;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+
+  .cover-footer-sub {
+    font-size: 7pt;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 2mm;
+  }
+
+  .cover-corner-accent {
+    position: absolute;
+    width: 35mm;
+    height: 35mm;
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .cover-corner-accent.tl { top: 12mm; left: 12mm; border-right: none; border-bottom: none; }
+  .cover-corner-accent.br { bottom: 12mm; right: 12mm; border-left: none; border-top: none; }
+
+  /* ===== TOC PAGE ===== */
+  .toc-page {
+    padding: 16mm 0 0;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .toc-header {
+    margin-bottom: 10mm;
+  }
+
+  .section-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 7pt;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 3mm;
+  }
+
+  .toc-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 22pt;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.2;
+    margin-bottom: 6mm;
+  }
+
+  .gold-rule {
+    width: 14mm;
+    height: 2.5px;
+    background: var(--gold);
+    border-radius: 2px;
+    margin-bottom: 8mm;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: baseline;
+    gap: 3mm;
+    padding: 4mm 0;
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .toc-num {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 9pt;
+    font-weight: 600;
+    color: var(--gold);
+    min-width: 10mm;
+    flex-shrink: 0;
+  }
+
+  .toc-text {
+    flex: 1;
+  }
+
+  .toc-text-main {
+    font-family: 'Inter', sans-serif;
+    font-size: 9.5pt;
+    font-weight: 600;
+    color: var(--navy);
+    display: block;
+    line-height: 1.3;
+  }
+
+  .toc-text-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 7.5pt;
+    color: var(--text-muted);
+    display: block;
+    margin-top: 0.5mm;
+    font-style: italic;
+  }
+
+  /* ===== MAIN CONTENT ===== */
+  .content {
+    padding-top: 4mm;
+  }
+
+  /* ===== MODULE HEADER ===== */
+  .module-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    margin: 0 -20mm;
+    padding: 14mm 20mm 12mm;
+    margin-bottom: 10mm;
+    position: relative;
+    overflow: hidden;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  .module-header::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 50mm;
+    height: 100%;
+    background: radial-gradient(ellipse at right, rgba(201,168,76,0.1), transparent 70%);
+  }
+
+  .module-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 20mm; right: 20mm;
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    opacity: 0.4;
+  }
+
+  .module-number {
+    font-family: 'Inter', sans-serif;
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 3mm;
+  }
+
+  .module-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20pt;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 3mm;
+  }
+
+  .module-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 9pt;
+    color: rgba(255,255,255,0.6);
+    font-style: italic;
+  }
+
+  /* ===== INTRO SECTION ===== */
+  .intro-header {
+    margin-bottom: 8mm;
+    padding-bottom: 6mm;
+    border-bottom: 2px solid var(--gray-200);
+    page-break-after: avoid;
+  }
+
+  .intro-header .section-label { margin-bottom: 2mm; }
+
+  .intro-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20pt;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.2;
+    margin-bottom: 1mm;
+  }
+
+  /* ===== BODY TEXT ===== */
+  p {
+    font-size: 10pt;
+    line-height: 1.75;
+    color: var(--text-secondary);
+    margin-bottom: 5mm;
+  }
+
+  strong { color: var(--text-primary); font-weight: 600; }
+  em { color: var(--text-secondary); }
+
+  /* ===== HEADINGS ===== */
+  h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 16pt;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.25;
+    margin: 10mm 0 5mm;
+    page-break-after: avoid;
+  }
+
+  h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: 0.2px;
+    margin: 8mm 0 4mm;
+    page-break-after: avoid;
+  }
+
+  h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 9.5pt;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: 0.3px;
+    margin: 6mm 0 3mm;
+  }
+
+  /* ===== ARCHETYPE CARDS ===== */
+  .archetype-card {
+    border: 1px solid var(--gray-200);
+    border-left: 4px solid var(--gold);
+    border-radius: 2px 6px 6px 2px;
+    padding: 6mm 7mm;
+    margin: 6mm 0;
+    background: var(--ivory);
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .archetype-type {
+    font-family: 'Inter', sans-serif;
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2mm;
+  }
+
+  .archetype-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 14pt;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 1.5mm;
+  }
+
+  .archetype-loop {
+    font-size: 9pt;
+    font-style: italic;
+    color: var(--text-muted);
+    margin-bottom: 4mm;
+    padding-bottom: 4mm;
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .archetype-meta {
+    display: grid;
+    gap: 2mm;
+    margin-bottom: 3mm;
+  }
+
+  .archetype-meta-row {
+    font-size: 9pt;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .archetype-meta-label {
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .archetype-cost {
+    background: rgba(201,168,76,0.08);
+    border-radius: 3px;
+    padding: 3mm 4mm;
+    font-size: 8.5pt;
+    color: var(--text-secondary);
+  }
+
+  .archetype-cost strong { color: var(--gold); }
+
+  /* ===== PULL QUOTE ===== */
+  .pull-quote {
+    border-top: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+    padding: 8mm 10mm;
+    margin: 8mm 0;
+    position: relative;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .pull-quote::before {
+    content: '\201C';
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 60pt;
+    color: var(--gold);
+    opacity: 0.2;
+    position: absolute;
+    top: -3mm;
+    left: 4mm;
+    line-height: 1;
+  }
+
+  .pull-quote p {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 13pt;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--navy);
+    line-height: 1.5;
+    text-align: center;
+    margin: 0;
+  }
+
+  /* ===== CALLOUT BOX ===== */
+  .callout {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    border-radius: 6px;
+    padding: 7mm 8mm;
+    margin: 7mm 0;
+    position: relative;
+    overflow: hidden;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .callout::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 30mm;
+    height: 100%;
+    background: radial-gradient(ellipse at right, rgba(201,168,76,0.12), transparent);
+  }
+
+  .callout-label {
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 3mm;
+  }
+
+  .callout p {
+    font-size: 9.5pt;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.6;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .callout strong { color: var(--white); }
+
+  /* ===== INFO BOX ===== */
+  .info-box {
+    background: var(--gold-pale);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 6px;
+    padding: 6mm 7mm;
+    margin: 6mm 0;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .info-box-label {
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: 2.5mm;
+  }
+
+  .info-box p {
+    font-size: 9.5pt;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* ===== STAGE BOXES ===== */
+  .stage-grid {
+    display: grid;
+    gap: 4mm;
+    margin: 6mm 0;
+  }
+
+  .stage-box {
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    padding: 5mm 6mm;
+    display: flex;
+    gap: 5mm;
+    align-items: flex-start;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .stage-num {
+    width: 9mm;
+    height: 9mm;
+    background: var(--navy);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 10pt;
+    font-weight: 700;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .stage-content h4 {
+    margin: 0 0 1.5mm;
+    font-size: 9.5pt;
+    color: var(--navy);
+  }
+
+  .stage-content p {
+    margin: 0;
+    font-size: 8.5pt;
+    line-height: 1.55;
+  }
+
+  /* ===== TABLES ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 5mm 0;
+    font-size: 8.5pt;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  thead {
+    background: var(--navy);
+  }
+
+  thead th {
+    color: var(--white);
+    font-weight: 600;
+    padding: 3.5mm 4mm;
+    text-align: left;
+    letter-spacing: 0.3px;
+    font-size: 8pt;
+  }
+
+  thead th:first-child { border-radius: 4px 0 0 0; }
+  thead th:last-child { border-radius: 0 4px 0 0; }
+
+  tbody tr:nth-child(even) { background: var(--gray-100); }
+  tbody tr:nth-child(odd) { background: var(--white); }
+
+  tbody td {
+    padding: 3mm 4mm;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--gray-200);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  tbody td strong { color: var(--navy); }
+
+  /* ===== DECISION FLOW ===== */
+  .decision-flow {
+    background: var(--navy);
+    border-radius: 6px;
+    padding: 7mm 8mm;
+    margin: 6mm 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 9pt;
+    color: var(--white);
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .decision-flow .flow-title {
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4mm;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .flow-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 3mm;
+    margin-bottom: 2.5mm;
+    line-height: 1.5;
+  }
+
+  .flow-arrow {
+    color: var(--gold);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 0.5mm;
+  }
+
+  .flow-content { flex: 1; }
+
+  .flow-branch {
+    margin-left: 6mm;
+    color: rgba(255,255,255,0.65);
+    font-size: 8.5pt;
+  }
+
+  .flow-highlight { color: var(--gold-light); font-weight: 600; }
+
+  /* ===== LISTS ===== */
+  ul, ol {
+    padding-left: 6mm;
+    margin: 3mm 0 5mm;
+  }
+
+  li {
+    font-size: 10pt;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 2mm;
+    padding-left: 2mm;
+  }
+
+  li strong { color: var(--text-primary); }
+
+  /* ===== CHECKLIST ===== */
+  .checklist {
+    list-style: none;
+    padding: 0;
+    margin: 4mm 0;
+  }
+
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 3mm;
+    padding: 2.5mm 3mm;
+    border-radius: 3px;
+    margin-bottom: 1.5mm;
+    font-size: 9.5pt;
+    padding-left: 0;
+  }
+
+  .checklist li::before {
+    content: '☐';
+    font-size: 11pt;
+    color: var(--gold);
+    flex-shrink: 0;
+    margin-top: -0.5mm;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ===== SELF-ASSESSMENT BOX ===== */
+  .self-assessment {
+    border: 1.5px dashed rgba(201,168,76,0.5);
+    border-radius: 6px;
+    padding: 6mm 7mm;
+    margin: 6mm 0;
+    background: rgba(245,237,211,0.3);
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .self-assessment-label {
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: 4mm;
+  }
+
+  .assessment-field {
+    margin-bottom: 4mm;
+    page-break-inside: avoid;
+  }
+
+  .assessment-field label {
+    display: block;
+    font-size: 8.5pt;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 1.5mm;
+  }
+
+  .assessment-line {
+    width: 100%;
+    height: 8mm;
+    border-bottom: 1px solid var(--gray-400);
+    margin-bottom: 1mm;
+  }
+
+  /* ===== FRAMEWORK SUMMARY CARDS ===== */
+  .framework-grid {
+    display: grid;
+    gap: 5mm;
+    margin: 5mm 0;
+  }
+
+  .framework-card {
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    overflow: hidden;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .framework-card-header {
+    background: var(--navy);
+    padding: 4mm 6mm;
+    display: flex;
+    align-items: center;
+    gap: 4mm;
+  }
+
+  .framework-card-num {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 16pt;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .framework-card-title-wrap {}
+
+  .framework-card-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--white);
+    display: block;
+    line-height: 1.2;
+  }
+
+  .framework-card-tagline {
+    font-size: 7.5pt;
+    color: rgba(255,255,255,0.55);
+    font-style: italic;
+  }
+
+  .framework-card-body {
+    padding: 5mm 6mm;
+    background: var(--ivory);
+  }
+
+  .framework-card-body p {
+    font-size: 9pt;
+    margin: 0 0 3mm;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  .framework-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .framework-steps li {
+    font-size: 8.5pt;
+    color: var(--text-secondary);
+    padding: 1.5mm 0 1.5mm 5mm;
+    border-left: 2px solid var(--gold);
+    margin-bottom: 1.5mm;
+    line-height: 1.4;
+    padding-left: 4mm;
+  }
+
+  /* ===== TOOLS SECTION ===== */
+  .tool-card {
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    margin: 6mm 0;
+    overflow: hidden;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .tool-card-header {
+    background: linear-gradient(90deg, var(--navy-mid), var(--navy));
+    padding: 4mm 6mm;
+    display: flex;
+    align-items: center;
+    gap: 3mm;
+  }
+
+  .tool-icon {
+    width: 8mm;
+    height: 8mm;
+    background: var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--navy);
+    flex-shrink: 0;
+  }
+
+  .tool-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 9.5pt;
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .tool-card-body {
+    padding: 5mm 6mm;
+    background: var(--white);
+  }
+
+  .tool-purpose {
+    font-size: 8.5pt;
+    font-style: italic;
+    color: var(--text-muted);
+    margin-bottom: 4mm;
+    padding-bottom: 3mm;
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  /* ===== CLOSING PAGE ===== */
+  .closing-page {
+    page-break-before: always;
+    break-before: page;
+    background: linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 60%, var(--navy-light) 100%);
+    margin: 0 -20mm -20mm;
+    padding: 0 20mm;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .closing-page::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% 30%, rgba(201,168,76,0.1), transparent 70%);
+  }
+
+  .closing-inner { position: relative; z-index: 1; width: 100%; }
+
+  .closing-ornament {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 30pt;
+    color: var(--gold);
+    opacity: 0.3;
+    margin-bottom: 6mm;
+  }
+
+  .closing-rule {
+    width: 30mm;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 8mm;
+  }
+
+  .closing-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 22pt;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 6mm;
+  }
+
+  .closing-body {
+    font-size: 10pt;
+    color: rgba(255,255,255,0.7);
+    max-width: 130mm;
+    margin: 0 auto 10mm;
+    line-height: 1.8;
+  }
+
+  .closing-cta {
+    background: var(--gold);
+    color: var(--navy);
+    font-family: 'Inter', sans-serif;
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4mm 12mm;
+    border-radius: 40px;
+    display: inline-block;
+    margin-bottom: 12mm;
+  }
+
+  .closing-brand {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 14pt;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 2mm;
+  }
+
+  .closing-series {
+    font-size: 7.5pt;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 8mm;
+  }
+
+  .closing-copyright {
+    font-size: 7.5pt;
+    color: rgba(255,255,255,0.25);
+    line-height: 1.7;
+  }
+
+  /* ===== SECTION DIVIDERS ===== */
+  .section-break {
+    display: flex;
+    align-items: center;
+    gap: 4mm;
+    margin: 10mm 0 8mm;
+  }
+
+  .section-break::before, .section-break::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gray-200);
+  }
+
+  .section-break-icon {
+    width: 6mm;
+    height: 6mm;
+    background: var(--gold);
+    border-radius: 50%;
+    opacity: 0.6;
+  }
+
+  /* ===== INTRO STATS ===== */
+  .intro-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4mm;
+    margin: 7mm 0;
+  }
+
+  .stat-box {
+    text-align: center;
+    background: var(--ivory);
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    padding: 5mm 4mm;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .stat-number {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 22pt;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 2mm;
+  }
+
+  .stat-label {
+    font-size: 7.5pt;
+    color: var(--text-muted);
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ===== WHAT YOU'LL GAIN BOX ===== */
+  .gain-list {
+    list-style: none;
+    padding: 0;
+    margin: 4mm 0;
+    display: grid;
+    gap: 2.5mm;
+  }
+
+  .gain-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 3mm;
+    font-size: 9.5pt;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin: 0;
+    padding: 0;
+  }
+
+  .gain-list li::before {
+    content: '→';
+    color: var(--gold);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 0.3mm;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ===== ROUTINE BOX ===== */
+  .routine-block {
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 5mm 0;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .routine-header {
+    background: var(--navy-mid);
+    padding: 3.5mm 5mm;
+    display: flex;
+    align-items: center;
+    gap: 3mm;
+  }
+
+  .routine-time {
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .routine-duration {
+    font-size: 7pt;
+    color: rgba(255,255,255,0.5);
+    margin-left: auto;
+  }
+
+  .routine-body {
+    padding: 4mm 5mm;
+    background: var(--white);
+  }
+
+  .routine-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .routine-body li {
+    font-size: 8.5pt;
+    color: var(--text-secondary);
+    padding: 1.5mm 0 1.5mm 5mm;
+    border-left: 2px solid var(--gray-200);
+    margin-bottom: 1.5mm;
+    line-height: 1.4;
+  }
+
+  /* ===== CHECKLIST SECTIONS ===== */
+  .checklist-section {
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 5mm 0;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .checklist-section-header {
+    background: var(--ivory);
+    padding: 3mm 5mm;
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .checklist-section-title {
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--navy);
+  }
+
+  .checklist-section-body {
+    padding: 4mm 5mm;
+    background: var(--white);
+  }
+
+  .checklist-section-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .checklist-section-body li {
+    display: flex;
+    align-items: flex-start;
+    gap: 3mm;
+    padding: 2mm 0;
+    font-size: 9pt;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    border-bottom: 1px solid var(--gray-100);
+    margin: 0;
+  }
+
+  .checklist-section-body li:last-child { border-bottom: none; }
+
+  .checklist-section-body li::before {
+    content: '☐';
+    font-size: 10pt;
+    color: var(--gold);
+    flex-shrink: 0;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ===== BREATH TECHNIQUE BOX ===== */
+  .technique-box {
+    background: var(--ivory);
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    padding: 6mm 7mm;
+    margin: 5mm 0;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .technique-label {
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: 4mm;
+  }
+
+  .breath-steps {
+    display: flex;
+    gap: 3mm;
+    margin-bottom: 4mm;
+  }
+
+  .breath-step {
+    flex: 1;
+    text-align: center;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 5px;
+    padding: 4mm 2mm;
+  }
+
+  .breath-count {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20pt;
+    font-weight: 700;
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+    margin-bottom: 2mm;
+  }
+
+  .breath-action {
+    font-size: 7.5pt;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== COVER PAGE ===== -->
+<div class="cover">
+  <div class="cover-corner-accent tl"></div>
+  <div class="cover-corner-accent br"></div>
+  <div class="cover-inner">
+    <div class="brand-tag">Lazy Scholar PH — Premium Mental Performance Series</div>
+    <div class="cover-gold-rule"></div>
+    <h1 class="cover-title">
+      The Overthinker's<span>Operating System</span>
+    </h1>
+    <div class="cover-subtitle">Stop the Loop. Install a Better Mind.</div>
+    <div class="cover-divider"></div>
+    <div class="cover-series">A Complete Framework for Decisions, Uncertainty & Self-Trust</div>
+  </div>
+  <div class="cover-footer">
+    <div class="cover-footer-brand">Lazy Scholar PH</div>
+    <div class="cover-footer-sub">Premium Digital Series · 2026</div>
+  </div>
+</div>
+
+<!-- ===== TABLE OF CONTENTS ===== -->
+<div class="toc-page">
+  <div class="toc-header">
+    <div class="section-label">Contents</div>
+    <h1 class="toc-title">What's Inside</h1>
+    <div class="gold-rule"></div>
+  </div>
+
+  <div class="toc-item">
+    <div class="toc-num">00</div>
+    <div class="toc-text">
+      <span class="toc-text-main">Introduction: The Myth of the Careful Thinker</span>
+      <span class="toc-text-sub">Why more thinking produces less clarity — and what to do instead</span>
+    </div>
+  </div>
+  <div class="toc-item">
+    <div class="toc-num">01</div>
+    <div class="toc-text">
+      <span class="toc-text-main">The Overthinking Taxonomy</span>
+      <span class="toc-text-sub">5 loop archetypes — identify your specific pattern before trying to fix it</span>
+    </div>
+  </div>
+  <div class="toc-item">
+    <div class="toc-num">02</div>
+    <div class="toc-text">
+      <span class="toc-text-main">The Interrupt Protocol</span>
+      <span class="toc-text-sub">A 3-stage, sub-2-minute system for breaking loops at the entry point</span>
+    </div>
+  </div>
+  <div class="toc-item">
+    <div class="toc-num">03</div>
+    <div class="toc-text">
+      <span class="toc-text-main">The 3-Layer Decision Filter</span>
+      <span class="toc-text-sub">Triage every choice by reversibility, stakes, and deliberation cost</span>
+    </div>
+  </div>
+  <div class="toc-item">
+    <div class="toc-num">04</div>
+    <div class="toc-text">
+      <span class="toc-text-main">Ambient Uncertainty Management</span>
+      <span class="toc-text-sub">Hold open loops without activating rumination — the Uncertainty Anchor system</span>
+    </div>
+  </div>
+  <div class="toc-item">
+    <div class="toc-num">05</div>
+    <div class="toc-text">
+      <span class="toc-text-main">The Certainty Replacement System</span>
+      <span class="toc-text-sub">Build internal self-trust so the loop loses its fuel permanently</span>
+    </div>
+  </div>
+  <div class="toc-item">
+    <div class="toc-num">06</div>
+    <div class="toc-text">
+      <span class="toc-text-main">Practical Applications & Daily Tools</span>
+      <span class="toc-text-sub">Decision logs, pre-commitment scripts, weekly audits, and daily routines</span>
+    </div>
+  </div>
+  <div class="toc-item">
+    <div class="toc-num">07</div>
+    <div class="toc-text">
+      <span class="toc-text-main">Summary: Your Operating System at a Glance</span>
+      <span class="toc-text-sub">All five frameworks condensed for rapid reference</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== INTRODUCTION ===== -->
+<div class="content">
+  <div class="intro-header">
+    <div class="section-label">Introduction — 00</div>
+    <h1 class="intro-title">The Myth of the Careful Thinker</h1>
+    <div class="gold-rule"></div>
+  </div>
+
+  <p>There is a story you've been told about overthinking — that it means you're thorough, conscientious, responsible. That the more you think, the better your decisions will be. That careful consideration is a virtue.</p>
+
+  <p><strong>That story is costing you enormously.</strong></p>
+
+  <p>Overthinking is not deep thinking. It is a protection mechanism that masquerades as rationality. When your brain perceives ambiguity — an uncertain outcome, a decision with no clear right answer — it triggers a low-grade threat response. Your prefrontal cortex gets partially bypassed by the same circuits designed to protect you from predators.</p>
+
+  <div class="pull-quote">
+    <p>More thinking produces less clarity. More loops produce less forward motion. Paralysis feels like caution — but functions like a cage.</p>
+  </div>
+
+  <p>This guide installs an alternative architecture. Not a mindset shift. Not a motivational push. An actual <strong>operating system</strong> — a set of repeatable frameworks that reduce cognitive load at the source, so the loop no longer forms in the first place.</p>
+
+  <div class="info-box">
+    <div class="info-box-label">What You'll Walk Away With</div>
+    <ul class="gain-list">
+      <li>A precise map of your specific overthinking pattern</li>
+      <li>A neurologically-grounded technique to interrupt loops within 2 minutes</li>
+      <li>A decision triage system that eliminates 80% of deliberation time</li>
+      <li>Tools for holding uncertainty without activating anxiety</li>
+      <li>An internal certainty engine that doesn't depend on others' approval</li>
+    </ul>
+  </div>
+
+  <p>This isn't about thinking less. It's about thinking <em>right</em>.</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ===== MODULE 01 ===== -->
+<div class="module-header">
+  <div class="module-number">Module — 01</div>
+  <h2 class="module-title">The Overthinking Taxonomy</h2>
+  <div class="module-subtitle">Know Your Loop Before You Try to Exit It</div>
+</div>
+
+<div class="content">
+
+  <div class="pull-quote">
+    <p>"You can't debug a system you haven't mapped."</p>
+  </div>
+
+  <p>Not all overthinking looks the same. The person who replays a conversation at 2 AM is not running the same loop as the person who can't buy a laptop without reading 47 reviews. Treating all overthinking with the same intervention is like prescribing the same medicine for every fever.</p>
+
+  <p><strong>The first step of your operating system is identification.</strong></p>
+
+  <!-- TYPE 1 -->
+  <div class="archetype-card">
+    <div class="archetype-type">Type 01</div>
+    <div class="archetype-name">The Catastrophizer</div>
+    <div class="archetype-loop">Core loop: What's the worst that could happen? → It probably will → What then?</div>
+    <div class="archetype-meta">
+      <div class="archetype-meta-row"><span class="archetype-meta-label">Signature thought:</span> "But what if..."</div>
+      <div class="archetype-meta-row"><span class="archetype-meta-label">Hidden belief:</span> Preparing for the worst prevents the worst.</div>
+    </div>
+    <div class="archetype-cost">
+      <strong>What it costs:</strong> Present-moment paralysis; treating low-probability events as inevitable certainties.
+    </div>
+  </div>
+
+  <!-- TYPE 2 -->
+  <div class="archetype-card">
+    <div class="archetype-type">Type 02</div>
+    <div class="archetype-name">The Perfectionist Planner</div>
+    <div class="archetype-loop">Core loop: This isn't ready → I need more information → Then I'll start</div>
+    <div class="archetype-meta">
+      <div class="archetype-meta-row"><span class="archetype-meta-label">Signature thought:</span> "I just need to figure out one more thing..."</div>
+      <div class="archetype-meta-row"><span class="archetype-meta-label">Hidden belief:</span> Sufficient preparation creates certainty.</div>
+    </div>
+    <div class="archetype-cost">
+      <strong>What it costs:</strong> Action. Time. Opportunities that expire while you're still in the planning phase.
+    </div>
+  </div>
+
+  <!-- TYPE 3 -->
+  <div class="archetype-card">
+    <div class="archetype-type">Type 03</div>
+    <div class="archetype-name">The Retrospective Ruminator</div>
+    <div class="archetype-loop">Core loop: What did I do? → Could I have done better? → I probably should have → What does that say about me?</div>
+    <div class="archetype-meta">
+      <div class="archetype-meta-row"><span class="archetype-meta-label">Signature thought:</span> "I should have..."</div>
+      <div class="archetype-meta-row"><span class="archetype-meta-label">Hidden belief:</span> Enough analysis will produce the 'correct' interpretation of the past.</div>
+    </div>
+    <div class="archetype-cost">
+      <strong>What it costs:</strong> Emotional energy; present-moment engagement; compounding regret that fuels the next loop.
+    </div>
+  </div>
+
+  <!-- TYPE 4 -->
+  <div class="archetype-card">
+    <div class="archetype-type">Type 04</div>
+    <div class="archetype-name">The Approval Seeker</div>
+    <div class="archetype-loop">Core loop: What do I want? → What will they think? → I'm not sure what I want anymore</div>
+    <div class="archetype-meta">
+      <div class="archetype-meta-row"><span class="archetype-meta-label">Signature thought:</span> "What would [person] think if I..."</div>
+      <div class="archetype-meta-row"><span class="archetype-meta-label">Hidden belief:</span> Other people's approval is a reliable guide to the right decision.</div>
+    </div>
+    <div class="archetype-cost">
+      <strong>What it costs:</strong> Authenticity; self-trust; the ability to act without building a consensus first.
+    </div>
+  </div>
+
+  <!-- TYPE 5 -->
+  <div class="archetype-card">
+    <div class="archetype-type">Type 05</div>
+    <div class="archetype-name">The Analysis Addict</div>
+    <div class="archetype-loop">Core loop: I need more data → Just one more source → I'll decide once I understand it fully</div>
+    <div class="archetype-meta">
+      <div class="archetype-meta-row"><span class="archetype-meta-label">Signature thought:</span> "I just need to understand this better before I commit."</div>
+      <div class="archetype-meta-row"><span class="archetype-meta-label">Hidden belief:</span> Enough information will eliminate uncertainty.</div>
+    </div>
+    <div class="archetype-cost">
+      <strong>What it costs:</strong> Time, momentum, and the realization that more data rarely changes decisions.
+    </div>
+  </div>
+
+  <!-- SELF ASSESSMENT -->
+  <div class="self-assessment">
+    <div class="self-assessment-label">Identify Your Pattern</div>
+    <div class="assessment-field">
+      <label>My primary overthinking type is:</label>
+      <div class="assessment-line"></div>
+    </div>
+    <div class="assessment-field">
+      <label>My signature thought is:</label>
+      <div class="assessment-line"></div>
+    </div>
+    <div class="assessment-field">
+      <label>Situations where it appears most frequently:</label>
+      <div class="assessment-line"></div>
+      <div class="assessment-line"></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Key Insight</div>
+    <p>Your overthinking type isn't a flaw — it's a <strong>coping strategy that once served you</strong>. You learned it. Which means you can update it. The goal isn't to shame the loop — it's to install a faster exit.</p>
+  </div>
+
+</div>
+
+<div class="page-break"></div>
+
+<!-- ===== MODULE 02 ===== -->
+<div class="module-header">
+  <div class="module-number">Module — 02</div>
+  <h2 class="module-title">The Interrupt Protocol</h2>
+  <div class="module-subtitle">Breaking the Cycle at the Source — Under 2 Minutes</div>
+</div>
+
+<div class="content">
+
+  <div class="pull-quote">
+    <p>"A loop only continues if you don't recognize the entry point."</p>
+  </div>
+
+  <p>The most critical moment in an overthinking spiral isn't the middle or the end. It's the <strong>first 30 seconds</strong> — the entry point where a thought becomes a loop. This is where the Interrupt Protocol operates.</p>
+
+  <div class="stage-grid">
+    <div class="stage-box">
+      <div class="stage-num">1</div>
+      <div class="stage-content">
+        <h4>The Recognition Signal</h4>
+        <p>Establish a personal cue that tells you: <em>"I have entered the loop."</em> Common signals: chest tightness, a recognizable circular thought pattern, opening the same tab repeatedly, typing then deleting. Identify your top 2–3 signals. Review them daily for one week until they fire automatically.</p>
+      </div>
+    </div>
+
+    <div class="stage-box">
+      <div class="stage-num">2</div>
+      <div class="stage-content">
+        <h4>The Physiological Pattern Break</h4>
+        <p>Interrupt the loop at the <strong>body level</strong> — not just the mental level. Attempting to think your way out of an overthinking loop is like escaping quicksand by struggling harder. The 5-5-5 Breath directly activates the parasympathetic system and brings your prefrontal cortex back online.</p>
+      </div>
+    </div>
+
+    <div class="stage-box">
+      <div class="stage-num">3</div>
+      <div class="stage-content">
+        <h4>The Mental "Save" Function</h4>
+        <p>After the physiological break, the loop re-enters if the concern is left unaddressed. Give your brain a scheduled resolution point: <em>"I am noting this concern and will address it at [specific time]."</em> Your brain accepts a deliberate deferral because it has certainty of return.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- BREATH TECHNIQUE -->
+  <div class="technique-box">
+    <div class="technique-label">The 5-5-5 Breath — Physiological Reset</div>
+    <div class="breath-steps">
+      <div class="breath-step">
+        <span class="breath-count">5</span>
+        <span class="breath-action">Inhale</span>
+      </div>
+      <div class="breath-step">
+        <span class="breath-count">5</span>
+        <span class="breath-action">Hold</span>
+      </div>
+      <div class="breath-step">
+        <span class="breath-count">5</span>
+        <span class="breath-action">Exhale</span>
+      </div>
+    </div>
+    <p style="font-size:8.5pt; color:var(--text-muted); margin:0; line-height:1.55">Repeat 2–3 cycles. This is a direct signal to the vagus nerve — not relaxation theater. It reduces cortisol and restores prefrontal access within 60–90 seconds.</p>
+  </div>
+
+  <!-- QUICK REF TABLE -->
+  <h3>Protocol Quick Reference</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Stage</th>
+        <th>Action</th>
+        <th>Time Required</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1. Recognize</strong></td>
+        <td>Detect your personal entry signal</td>
+        <td>10 seconds</td>
+      </tr>
+      <tr>
+        <td><strong>2. Break</strong></td>
+        <td>5-5-5 breath or physical interrupt</td>
+        <td>60–90 seconds</td>
+      </tr>
+      <tr>
+        <td><strong>3. Save</strong></td>
+        <td>"I'll address this at [specific time]"</td>
+        <td>15 seconds</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <div class="callout-label">Important Distinction</div>
+    <p>The Interrupt Protocol isn't about stopping thinking. It's about stopping <strong>unscheduled thinking</strong> — the kind that happens automatically, uninvited, and without productive output. You are not suppressing; you are <strong>scheduling</strong>.</p>
+  </div>
+
+</div>
+
+<div class="page-break"></div>
+
+<!-- ===== MODULE 03 ===== -->
+<div class="module-header">
+  <div class="module-number">Module — 03</div>
+  <h2 class="module-title">The 3-Layer Decision Filter</h2>
+  <div class="module-subtitle">A Triage System for Every Choice — Spend Time Proportional to Actual Stakes</div>
+</div>
+
+<div class="content">
+
+  <div class="pull-quote">
+    <p>"Most decisions deserve less than 3 minutes. Almost none deserve the days you give them."</p>
+  </div>
+
+  <p>The core dysfunction of overthinkers isn't bad decisions — it's applying the same cognitive weight to <em>every</em> decision. Choosing lunch receives the same mental processing as choosing a career path. This is cognitively catastrophic.</p>
+
+  <p>The 3-Layer Decision Filter assigns each decision to the correct deliberation category <strong>before</strong> you spend a single minute analyzing the decision itself.</p>
+
+  <!-- LAYER 1 -->
+  <h3>Layer 1 — The Reversibility Test</h3>
+  <p><strong>Question:</strong> <em>Can this be undone or course-corrected within 30 days at reasonable cost?</em></p>
+
+  <table>
+    <thead>
+      <tr><th>Answer</th><th>Decision Type</th><th>Deliberation Cap</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>YES</strong></td>
+        <td>Reversible — make the most reasonable choice available and move</td>
+        <td><strong>5 minutes maximum</strong></td>
+      </tr>
+      <tr>
+        <td><strong>NO</strong></td>
+        <td>Irreversible — proceed to Layer 2</td>
+        <td>TBD by Layer 2</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="info-box">
+    <div class="info-box-label">Reversibility Examples</div>
+    <p><strong>Reversible:</strong> Which gym to try, signing up for an online course, what to post, reaching out to someone, which book to read next.<br><br><strong>Irreversible:</strong> Signing a multi-year contract, major financial commitments, ending a long-term relationship, public statements with lasting consequences.</p>
+  </div>
+
+  <!-- LAYER 2 -->
+  <h3>Layer 2 — The Stakes Assessment</h3>
+  <p><strong>Question:</strong> <em>What is realistically at risk if this goes wrong?</em></p>
+
+  <table>
+    <thead>
+      <tr><th>Stakes Level</th><th>Description</th><th>Deliberation Budget</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Low</strong></td>
+        <td>Inconvenience or minor cost if wrong</td>
+        <td>10–20 minutes</td>
+      </tr>
+      <tr>
+        <td><strong>Medium</strong></td>
+        <td>Significant but manageable setback</td>
+        <td>1–3 focused hours</td>
+      </tr>
+      <tr>
+        <td><strong>High</strong></td>
+        <td>Major life or financial consequence</td>
+        <td>Full deliberation process</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <div class="callout-label">Critical Calibration Note</div>
+    <p>Most decisions that <strong>feel</strong> High-Stakes are actually Medium or Low. Emotional weight is not a reliable indicator of actual stakes. Ask yourself: <em>"In 3 years, how much will this specific choice matter?"</em></p>
+  </div>
+
+  <!-- LAYER 3 -->
+  <h3>Layer 3 — The Time Cost Audit</h3>
+  <p><strong>Question:</strong> <em>What is the actual cost of deliberating further?</em></p>
+  <p>Before extending deliberation, ask: Has my decision actually changed in the last 10 minutes of thinking about it? If the answer is <strong>no</strong>, you have exceeded your productive deliberation window. Decide with available information.</p>
+
+  <!-- DECISION FLOW -->
+  <div class="decision-flow">
+    <div class="flow-title">Decision Filter Flow</div>
+    <div class="flow-step">
+      <div class="flow-arrow">▶</div>
+      <div class="flow-content">Decision arrives</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-arrow">↓</div>
+      <div class="flow-content">
+        <span class="flow-highlight">Layer 1:</span> Reversible?
+        <div class="flow-branch">→ YES: 5-minute rule → <span class="flow-highlight">DECIDE</span></div>
+        <div class="flow-branch">→ NO: Continue to Layer 2</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-arrow">↓</div>
+      <div class="flow-content">
+        <span class="flow-highlight">Layer 2:</span> Stakes level?
+        <div class="flow-branch">→ LOW/MEDIUM: Assign time cap → <span class="flow-highlight">DECIDE</span></div>
+        <div class="flow-branch">→ HIGH: Continue to Layer 3</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-arrow">↓</div>
+      <div class="flow-content">
+        <span class="flow-highlight">Layer 3:</span> Is more thinking producing new value?
+        <div class="flow-branch">→ NO: <span class="flow-highlight">DECIDE NOW</span></div>
+        <div class="flow-branch">→ YES: Continue with strict time cap → <span class="flow-highlight">DECIDE</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="page-break"></div>
+
+<!-- ===== MODULE 04 ===== -->
+<div class="module-header">
+  <div class="module-number">Module — 04</div>
+  <h2 class="module-title">Ambient Uncertainty Management</h2>
+  <div class="module-subtitle">Holding Open Loops Without Drowning in Them</div>
+</div>
+
+<div class="content">
+
+  <div class="pull-quote">
+    <p>"The mind treats an unanswered question like an open wound. You don't need to answer it — you need to properly dress it."</p>
+  </div>
+
+  <p>Not all decisions can be made immediately. Some require waiting for information, for other people, for circumstances to develop. These unresolved situations — <strong>open loops</strong> — are a primary trigger for chronic overthinking.</p>
+
+  <p>Most overthinkers have 5–15 open loops running simultaneously at any given time. Each one consumes background processing power — reducing focus, elevating baseline anxiety, and contributing to decision fatigue even when you're not consciously thinking about any of them.</p>
+
+  <h3>The Open Loop Inventory Process</h3>
+
+  <div class="stage-grid">
+    <div class="stage-box">
+      <div class="stage-num">1</div>
+      <div class="stage-content">
+        <h4>Full Inventory</h4>
+        <p>List every unresolved decision, pending situation, or unanswered question currently occupying mental space. Include the trivial alongside the significant. Don't filter — empty the buffer completely.</p>
+      </div>
+    </div>
+    <div class="stage-box">
+      <div class="stage-num">2</div>
+      <div class="stage-content">
+        <h4>Categorize Each Loop</h4>
+        <p><strong>Actionable now</strong> — Can move forward with a specific action today.<br><strong>Waiting for input</strong> — Requires someone else's action.<br><strong>Time-dependent</strong> — Resolves when a future date arrives.<br><strong>Unresolvable</strong> — Cannot be answered with available information.</p>
+      </div>
+    </div>
+    <div class="stage-box">
+      <div class="stage-num">3</div>
+      <div class="stage-content">
+        <h4>Apply the Response</h4>
+        <p><strong>Actionable:</strong> Schedule a specific action within 48 hours.<br><strong>Waiting:</strong> Set a follow-up trigger; remove from active mental load.<br><strong>Time-dependent:</strong> Park it with a calendar reminder.<br><strong>Unresolvable:</strong> Apply the Uncertainty Anchor.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>The Uncertainty Anchor</h3>
+
+  <p>For loops that cannot be resolved — existential uncertainties, unknowable future outcomes — the goal is not resolution. The goal is <strong>stabilization</strong>. Use this 3-part internal statement:</p>
+
+  <div class="info-box">
+    <div class="info-box-label">The Uncertainty Anchor — 3-Part Formula</div>
+    <p>
+      <strong>1. Acknowledge:</strong> <em>"I genuinely do not know [X]."</em><br><br>
+      <strong>2. Scope:</strong> <em>"What I do know is [concrete present reality]."</em><br><br>
+      <strong>3. Act:</strong> <em>"What I can do right now is [specific action within my control]."</em>
+    </p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Example Application</div>
+    <p><em>"I genuinely do not know whether this opportunity will work out."</em><br><em>"What I do know is I have strong skills, a clear reason for interest, and a positive track record."</em><br><em>"What I can do right now is make the best decision I can with available information and commit to a 6-month review."</em></p>
+  </div>
+
+  <h3>Scheduled Uncertainty Windows</h3>
+
+  <p>Rather than allowing open loops to surface throughout the day, contain them. Designate <strong>one 20-minute window per day</strong> (ideally late afternoon) as your Uncertainty Window. During this window, you are permitted — even encouraged — to think through open loops and unresolved questions.</p>
+
+  <p>Outside this window: apply the Interrupt Protocol. This isn't suppression — it's scheduling. Within 2–3 weeks, most people report a significant reduction in intrusive overthinking simply from this structure.</p>
+
+</div>
+
+<div class="page-break"></div>
+
+<!-- ===== MODULE 05 ===== -->
+<div class="module-header">
+  <div class="module-number">Module — 05</div>
+  <h2 class="module-title">The Certainty Replacement System</h2>
+  <div class="module-subtitle">Building the Internal Evidence Base That Ends the Loop Permanently</div>
+</div>
+
+<div class="content">
+
+  <div class="pull-quote">
+    <p>"Overthinking doesn't end when you get more information. It ends when you trust yourself to handle what happens next."</p>
+  </div>
+
+  <p>The deepest driver of chronic overthinking is not uncertainty about outcomes. It is uncertainty about the <em>self</em> — a quiet belief that you might not be able to handle what happens if the decision goes wrong.</p>
+
+  <p>This is why information-gathering never permanently solves overthinking. More data temporarily quiets the anxiety, but the underlying <strong>self-trust deficit</strong> remains. The next decision triggers the same loop. The Certainty Replacement System addresses the root cause.</p>
+
+  <h3>Component 1: The Evidence Ledger</h3>
+
+  <p>Most overthinkers have poor access to evidence of their own competence. When facing a decision, they draw a blank — and the absence of evidence reads as absence of capability.</p>
+
+  <p>The Evidence Ledger is a running document that captures decisions you made correctly under uncertainty, challenges you navigated better than expected, and moments where things went wrong and you handled it anyway.</p>
+
+  <div class="info-box">
+    <div class="info-box-label">How to Build It</div>
+    <p><strong>Backward audit:</strong> List 10 past decisions or challenges where you performed better than your anxious predictions suggested you would.<br><br><strong>Weekly additions:</strong> Add one specific, concrete example per week.<br><br><strong>Pre-decision review:</strong> Read your ledger before high-stakes decisions to access your actual capability, not your anxiety's assessment of it.</p>
+  </div>
+
+  <h3>Component 2: The Micro-Commitment Track</h3>
+
+  <p>Self-trust is not a feeling. It is a <strong>record</strong> — built through small promises made and kept. Overthinking erodes self-trust through perpetual deferral. When you commit then endlessly delay, you teach your brain that your commitments mean nothing.</p>
+
+  <div class="stage-grid">
+    <div class="stage-box">
+      <div class="stage-num">1</div>
+      <div class="stage-content">
+        <h4>Daily Commitment</h4>
+        <p>Identify one specific micro-commitment — a decision or action you will complete before a defined deadline, regardless of how you feel about it.</p>
+      </div>
+    </div>
+    <div class="stage-box">
+      <div class="stage-num">2</div>
+      <div class="stage-content">
+        <h4>Criteria</h4>
+        <p>The commitment must be: <strong>concrete</strong> (not vague), <strong>completable</strong> (realistic for today), and <strong>slightly uncomfortable</strong> (within your stretch zone).</p>
+      </div>
+    </div>
+    <div class="stage-box">
+      <div class="stage-num">3</div>
+      <div class="stage-content">
+        <h4>Track Completion</h4>
+        <p>Log completions in a simple daily record. After 21 consecutive completions, most people report a measurable shift in baseline confidence and a reduction in pre-decision anxiety.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>Component 3: The Bias Toward Action Rule</h3>
+
+  <p>For all decisions where the Decision Filter returns "decide," apply this operating principle:</p>
+
+  <div class="callout">
+    <div class="callout-label">The Bias Toward Action Rule</div>
+    <p><strong>When in doubt, take the action that produces more information.</strong><br><br>
+    Overthinking produces the illusion of progress without actual forward movement. Action — even imperfect action — produces real data about real outcomes, builds the Evidence Ledger, builds self-trust, and reduces the next round of overthinking. Motion is a better data source than simulation.</p>
+  </div>
+
+  <div class="pull-quote">
+    <p>"The antidote to overthinking is not certainty. It is the accumulated evidence that you can handle uncertainty."</p>
+  </div>
+
+</div>
+
+<div class="page-break"></div>
+
+<!-- ===== PRACTICAL APPLICATIONS ===== -->
+<div class="module-header">
+  <div class="module-number">Module — 06</div>
+  <h2 class="module-title">Practical Applications &amp; Daily Tools</h2>
+  <div class="module-subtitle">Integrate the System Into Your Actual Life</div>
+</div>
+
+<div class="content">
+
+  <!-- TOOL 1 -->
+  <div class="tool-card">
+    <div class="tool-card-header">
+      <div class="tool-icon">1</div>
+      <div class="tool-name">The Daily Decision Log</div>
+    </div>
+    <div class="tool-card-body">
+      <div class="tool-purpose">Track deliberation time vs. actual decision quality to recalibrate your natural instincts.</div>
+      <table>
+        <thead>
+          <tr><th>Decision</th><th>Time Spent</th><th>Budget</th><th>Outcome (1 wk)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:8.5pt; color:var(--text-muted); margin-top:3mm; margin-bottom:0">Review weekly. After 4 weeks, identify decision categories where you chronically over-deliberate with no improvement in outcome quality.</p>
+    </div>
+  </div>
+
+  <!-- TOOL 2 -->
+  <div class="tool-card">
+    <div class="tool-card-header">
+      <div class="tool-icon">2</div>
+      <div class="tool-name">Timed Deliberation Windows by Category</div>
+    </div>
+    <div class="tool-card-body">
+      <div class="tool-purpose">Pre-assign deliberation caps to common decision types. Do this work once; apply it forever.</div>
+      <table>
+        <thead>
+          <tr><th>Decision Category</th><th>Suggested Cap</th><th>Your Cap</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Daily logistics</td><td>2 minutes</td><td></td></tr>
+          <tr><td>Weekly scheduling</td><td>10 minutes</td><td></td></tr>
+          <tr><td>Content / creative choices</td><td>15 minutes</td><td></td></tr>
+          <tr><td>Career / work opportunities</td><td>48 hours</td><td></td></tr>
+          <tr><td>Major financial decisions</td><td>1 week</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TOOL 3 -->
+  <div class="tool-card">
+    <div class="tool-card-header">
+      <div class="tool-icon">3</div>
+      <div class="tool-name">Pre-Commitment Scripts</div>
+    </div>
+    <div class="tool-card-body">
+      <div class="tool-purpose">Write the decision in advance for recurring trigger situations.</div>
+      <p style="font-size:8.5pt; margin-bottom:3mm"><strong>Format:</strong> <em>"When [trigger] occurs, I will [specific action] without deliberating further."</em></p>
+      <ul style="padding-left:5mm; margin:0">
+        <li style="font-size:8.5pt; margin-bottom:2mm; color:var(--text-secondary)">"When I finish a draft, I will submit within 24 hours without requesting additional feedback."</li>
+        <li style="font-size:8.5pt; margin-bottom:2mm; color:var(--text-secondary)">"When I receive a meeting request that fits my criteria, I will respond within 2 hours."</li>
+        <li style="font-size:8.5pt; margin-bottom:0; color:var(--text-secondary)">"When I feel the urge to research a decision I've already made, I will note it and close the tab."</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TOOL 4 -->
+  <div class="tool-card">
+    <div class="tool-card-header">
+      <div class="tool-icon">4</div>
+      <div class="tool-name">Weekly Overthinking Audit — Sunday, 15 Minutes</div>
+    </div>
+    <div class="tool-card-body">
+      <div class="tool-purpose">Identify patterns, recalibrate systems, close the loop on what to improve next week.</div>
+      <ul class="checklist">
+        <li>What were the 3 most significant overthinking episodes this week?</li>
+        <li>Which archetype was running? (Module 01 reference)</li>
+        <li>What triggered the entry into the loop?</li>
+        <li>Did I apply the Interrupt Protocol? If not, what stopped me?</li>
+        <li>What decision, made faster, would have produced the same or better outcome?</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- DAILY ROUTINE -->
+  <h3>Daily Routine Integration</h3>
+
+  <div class="routine-block">
+    <div class="routine-header">
+      <div class="routine-time">Morning</div>
+      <div class="routine-duration">5 minutes</div>
+    </div>
+    <div class="routine-body">
+      <ul>
+        <li>Identify the day's top 3 decisions that require deliberation</li>
+        <li>Assign each a time budget and scheduled deliberation window</li>
+        <li>Review any open loops from the Inventory; identify one actionable item</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="routine-block">
+    <div class="routine-header">
+      <div class="routine-time">During the Day</div>
+      <div class="routine-duration">On-demand</div>
+    </div>
+    <div class="routine-body">
+      <ul>
+        <li>Apply the Interrupt Protocol at the first sign of loop entry</li>
+        <li>Use Pre-Commitment Scripts for recurring decision types</li>
+        <li>Defer unscheduled uncertainty to the afternoon Uncertainty Window</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="routine-block">
+    <div class="routine-header">
+      <div class="routine-time">Evening</div>
+      <div class="routine-duration">10 minutes</div>
+    </div>
+    <div class="routine-body">
+      <ul>
+        <li>Complete the Daily Decision Log for significant deliberations</li>
+        <li>Note one addition to the Evidence Ledger</li>
+        <li>Apply a Mental Save to close any unresolved open loops</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<div class="page-break"></div>
+
+<!-- ===== SUMMARY ===== -->
+<div class="module-header">
+  <div class="module-number">Module — 07</div>
+  <h2 class="module-title">Your Operating System at a Glance</h2>
+  <div class="module-subtitle">Five Frameworks — One Reference Page</div>
+</div>
+
+<div class="content">
+
+  <div class="framework-grid">
+    <div class="framework-card">
+      <div class="framework-card-header">
+        <div class="framework-card-num">01</div>
+        <div class="framework-card-title-wrap">
+          <span class="framework-card-name">The Overthinking Taxonomy</span>
+          <span class="framework-card-tagline">Know your loop before you try to exit it</span>
+        </div>
+      </div>
+      <div class="framework-card-body">
+        <ul class="framework-steps">
+          <li>Identify your primary archetype (Catastrophizer, Perfectionist Planner, Retrospective Ruminator, Approval Seeker, Analysis Addict)</li>
+          <li>Recognize your signature thought pattern</li>
+          <li>Know the specific cost it extracts from your life</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="framework-card">
+      <div class="framework-card-header">
+        <div class="framework-card-num">02</div>
+        <div class="framework-card-title-wrap">
+          <span class="framework-card-name">The Interrupt Protocol</span>
+          <span class="framework-card-tagline">Break the loop in under 2 minutes</span>
+        </div>
+      </div>
+      <div class="framework-card-body">
+        <ul class="framework-steps">
+          <li>Recognize entry signal (your personalized loop detector)</li>
+          <li>Physiological pattern break: 5-5-5 breath or physical interrupt</li>
+          <li>Mental Save: "I'll address this at [specific time]"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="framework-card">
+      <div class="framework-card-header">
+        <div class="framework-card-num">03</div>
+        <div class="framework-card-title-wrap">
+          <span class="framework-card-name">The 3-Layer Decision Filter</span>
+          <span class="framework-card-tagline">Spend deliberation time proportional to actual stakes</span>
+        </div>
+      </div>
+      <div class="framework-card-body">
+        <ul class="framework-steps">
+          <li>Layer 1 — Reversible? → 5-minute rule → Decide</li>
+          <li>Layer 2 — Real stakes? → Assign time budget → Decide</li>
+          <li>Layer 3 — Still producing value? → No → Decide now</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="framework-card">
+      <div class="framework-card-header">
+        <div class="framework-card-num">04</div>
+        <div class="framework-card-title-wrap">
+          <span class="framework-card-name">Ambient Uncertainty Management</span>
+          <span class="framework-card-tagline">Hold open loops without activation</span>
+        </div>
+      </div>
+      <div class="framework-card-body">
+        <ul class="framework-steps">
+          <li>Open Loop Inventory — empty the buffer completely</li>
+          <li>Categorize and apply the appropriate response</li>
+          <li>Use the Uncertainty Anchor for unresolvable items</li>
+          <li>Contain uncertainty to a daily 20-minute Uncertainty Window</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="framework-card">
+      <div class="framework-card-header">
+        <div class="framework-card-num">05</div>
+        <div class="framework-card-title-wrap">
+          <span class="framework-card-name">The Certainty Replacement System</span>
+          <span class="framework-card-tagline">Build internal evidence — end the loop permanently</span>
+        </div>
+      </div>
+      <div class="framework-card-body">
+        <ul class="framework-steps">
+          <li>Evidence Ledger: build your personal competence reference database</li>
+          <li>Micro-Commitment Track: complete 21 daily commitments consecutively</li>
+          <li>Bias Toward Action Rule: choose the option that produces more information</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- MASTER CHECKLIST -->
+  <h3 style="margin-top:8mm">The Master Checklist</h3>
+
+  <div class="checklist-section">
+    <div class="checklist-section-header">
+      <div class="checklist-section-title">Daily Practices</div>
+    </div>
+    <div class="checklist-section-body">
+      <ul>
+        <li>Morning: assign deliberation budgets to today's top decisions</li>
+        <li>Apply Interrupt Protocol at first detection of loop entry</li>
+        <li>Use Pre-Commitment Scripts for recurring decision types</li>
+        <li>Afternoon Uncertainty Window (20 minutes) — process all open loops</li>
+        <li>Evening: complete Decision Log and Evidence Ledger entry</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="checklist-section">
+    <div class="checklist-section-header">
+      <div class="checklist-section-title">Weekly Practices</div>
+    </div>
+    <div class="checklist-section-body">
+      <ul>
+        <li>Sunday Overthinking Audit (15 minutes)</li>
+        <li>Review and update Pre-Commitment Scripts based on new trigger patterns</li>
+        <li>Calibrate deliberation time caps using Decision Log data</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="checklist-section">
+    <div class="checklist-section-header">
+      <div class="checklist-section-title">Foundational Practices</div>
+    </div>
+    <div class="checklist-section-body">
+      <ul>
+        <li>Evidence Ledger is active and updated weekly</li>
+        <li>Micro-Commitment Track is maintained daily</li>
+        <li>Open Loop Inventory is current (reviewed weekly)</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== CLOSING PAGE ===== -->
+<div class="closing-page">
+  <div class="closing-inner">
+    <div class="closing-ornament">◆</div>
+    <div class="closing-rule"></div>
+    <h2 class="closing-title">Start With One Module.<br>Run It for One Week.<br>Watch What Shifts.</h2>
+    <p class="closing-body">
+      You picked up this guide because the loop was costing you something — time, confidence, opportunities, the exhaustion of being inside your own head more than you want to be.<br><br>
+      What you now have is not a philosophy. It is a set of repeatable, testable, refinable tools. They will work imperfectly at first. Every loop you interrupt builds the neural pathways that make interruption automatic. Every decision made inside your deliberation cap builds the self-trust that makes the next decision easier.<br><br>
+      You already have the capacity to move forward clearly. This guide gives you the architecture to access it on demand.
+    </p>
+    <div class="closing-cta">Begin with Module 01 — Know Your Loop</div>
+    <div class="closing-brand">Lazy Scholar PH</div>
+    <div class="closing-series">Premium Mental Performance Series</div>
+    <div class="closing-copyright">
+      © 2026 Lazy Scholar PH. All rights reserved.<br>
+      For personal use only. Not for resale or redistribution.
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
