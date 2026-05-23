@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Overthinker's Operating System — Lazy Scholar PH</title>
+<style>
+  /* ============================================================
+     FONTS & RESET
+  ============================================================ */
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ============================================================
+     COLOR SYSTEM
+  ============================================================ */
+  :root {
+    --navy:       #0D1B2A;
+    --navy-mid:   #162338;
+    --navy-light: #1E3A5F;
+    --gold:       #C9A96E;
+    --gold-light: #E8D5A8;
+    --gold-pale:  #F8F2E6;
+    --cream:      #FAFAF7;
+    --white:      #FFFFFF;
+    --text:       #1A1A2E;
+    --text-mid:   #3D3D5C;
+    --text-light: #6B6B8A;
+    --border:     #E0D8C8;
+    --accent-teal:#2C6E7F;
+  }
+
+  /* ============================================================
+     BASE
+  ============================================================ */
+  html { font-size: 10pt; }
+
+  body {
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    line-height: 1.75;
+    font-size: 10.5pt;
+  }
+
+  /* ============================================================
+     PAGE LAYOUT (WeasyPrint)
+  ============================================================ */
+  @page {
+    size: 8.5in 11in;
+    margin: 0.85in 0.9in 0.75in 0.9in;
+    @bottom-center {
+      content: counter(page) " | The Overthinker's Operating System";
+      font-family: 'Inter', sans-serif;
+      font-size: 8pt;
+      color: var(--text-light);
+      border-top: 0.5pt solid var(--border);
+      padding-top: 6pt;
+    }
+  }
+
+  @page cover { margin: 0; @bottom-center { content: none; } }
+  @page toc   { @bottom-center { content: none; } }
+  @page section-break { @bottom-center { content: none; } }
+
+  /* ============================================================
+     COVER PAGE
+  ============================================================ */
+  .cover {
+    page: cover;
+    page-break-after: always;
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(165deg, var(--navy) 0%, var(--navy-mid) 55%, var(--navy-light) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover-accent-bar {
+    height: 6pt;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+    width: 100%;
+  }
+
+  .cover-inner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.2in 1.0in;
+  }
+
+  .cover-brand {
+    font-family: 'Inter', sans-serif;
+    font-size: 8.5pt;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.55in;
+  }
+
+  .cover-series {
+    font-family: 'Inter', sans-serif;
+    font-size: 8pt;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 0.18in;
+  }
+
+  .cover-title {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-size: 46pt;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.12;
+    margin-bottom: 0.22in;
+    letter-spacing: -0.01em;
+  }
+
+  .cover-title-accent {
+    color: var(--gold);
+  }
+
+  .cover-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5pt;
+    font-weight: 300;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.6;
+    max-width: 5.8in;
+    margin-bottom: 0.55in;
+    letter-spacing: 0.01em;
+  }
+
+  .cover-divider {
+    width: 2.0in;
+    height: 1.5pt;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin-bottom: 0.35in;
+  }
+
+  .cover-promise {
+    background: rgba(201, 169, 110, 0.1);
+    border: 0.75pt solid rgba(201, 169, 110, 0.35);
+    border-radius: 4pt;
+    padding: 0.22in 0.28in;
+    max-width: 5.2in;
+  }
+
+  .cover-promise p {
+    font-family: 'Inter', sans-serif;
+    font-size: 9.5pt;
+    color: rgba(255,255,255,0.82);
+    line-height: 1.65;
+    font-style: italic;
+  }
+
+  .cover-footer {
+    padding: 0.3in 1.0in;
+    border-top: 0.5pt solid rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cover-footer-brand {
+    font-family: 'Inter', sans-serif;
+    font-size: 8pt;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .cover-footer-year {
+    font-family: 'Inter', sans-serif;
+    font-size: 8pt;
+    color: rgba(255,255,255,0.35);
+  }
+
+  /* ============================================================
+     TABLE OF CONTENTS
+  ============================================================ */
+  .toc-page {
+    page: toc;
+    page-break-after: always;
+    padding: 0.6in 0;
+  }
+
+  .toc-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 7.5pt;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.18in;
+  }
+
+  .toc-title {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-size: 26pt;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 0.5in;
+    line-height: 1.2;
+  }
+
+  .toc-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: baseline;
+    padding: 0.1in 0;
+    border-bottom: 0.5pt solid var(--border);
+  }
+
+  .toc-num {
+    font-family: 'Inter', sans-serif;
+    font-size: 7.5pt;
+    font-weight: 600;
+    color: var(--gold);
+    min-width: 0.35in;
+    letter-spacing: 0.05em;
+  }
+
+  .toc-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 10pt;
+    font-weight: 500;
+    color: var(--navy);
+    flex: 1;
+    padding-right: 0.2in;
+  }
+
+  .toc-sub {
+    font-size: 8.5pt;
+    font-weight: 400;
+    color: var(--text-light);
+    display: block;
+    margin-top: 2pt;
+  }
+
+  /* ============================================================
+     SECTION BREAK PAGES
+  ============================================================ */
+  .section-break {
+    page: section-break;
+    page-break-before: always;
+    page-break-after: always;
+    background: var(--navy);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.0in;
+    position: relative;
+  }
+
+  .section-break::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4pt;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light), transparent);
+  }
+
+  .section-break-num {
+    font-family: 'Inter', sans-serif;
+    font-size: 7.5pt;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.18in;
+  }
+
+  .section-break-title {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-size: 34pt;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 0.22in;
+    max-width: 5.5in;
+  }
+
+  .section-break-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 11pt;
+    font-weight: 300;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.7;
+    max-width: 5.0in;
+  }
+
+  /* ============================================================
+     CONTENT PAGES
+  ============================================================ */
+  .content {
+    padding: 0;
+  }
+
+  /* Section heading */
+  h1.section-title {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-size: 24pt;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.2;
+    margin: 0.4in 0 0.12in 0;
+  }
+
+  h2.subsection {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-size: 15pt;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 0.35in 0 0.1in 0;
+    border-bottom: 1.5pt solid var(--gold);
+    padding-bottom: 0.06in;
+    line-height: 1.3;
+  }
+
+  h3.item-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 0.25in 0 0.06in 0;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  h4.mini-head {
+    font-family: 'Inter', sans-serif;
+    font-size: 9.5pt;
+    font-weight: 700;
+    color: var(--accent-teal);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0.2in 0 0.06in 0;
+  }
+
+  p {
+    font-family: 'Inter', sans-serif;
+    font-size: 10.5pt;
+    color: var(--text-mid);
+    line-height: 1.78;
+    margin-bottom: 0.12in;
+  }
+
+  strong {
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  em {
+    font-style: italic;
+    color: var(--text-mid);
+  }
+
+  /* ============================================================
+     SPECIAL COMPONENTS
+  ============================================================ */
+
+  /* Pull Quote */
+  .pull-quote {
+    background: var(--navy);
+    border-left: 4pt solid var(--gold);
+    padding: 0.28in 0.38in;
+    margin: 0.35in 0;
+    border-radius: 0 4pt 4pt 0;
+  }
+
+  .pull-quote p {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-size: 13pt;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--white);
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  /* Callout Box */
+  .callout {
+    background: var(--gold-pale);
+    border: 1pt solid var(--gold-light);
+    border-radius: 4pt;
+    padding: 0.22in 0.28in;
+    margin: 0.3in 0;
+  }
+
+  .callout-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.06in;
+  }
+
+  .callout p {
+    font-size: 10pt;
+    color: var(--text);
+    margin: 0;
+    line-height: 1.7;
+  }
+
+  /* Info Box */
+  .info-box {
+    background: rgba(44, 110, 127, 0.06);
+    border: 1pt solid rgba(44, 110, 127, 0.25);
+    border-radius: 4pt;
+    padding: 0.22in 0.28in;
+    margin: 0.3in 0;
+  }
+
+  .info-box p {
+    font-size: 10pt;
+    color: var(--text-mid);
+    margin: 0;
+  }
+
+  /* Archetype Card */
+  .archetype-card {
+    background: var(--white);
+    border: 1pt solid var(--border);
+    border-top: 3pt solid var(--gold);
+    border-radius: 0 0 4pt 4pt;
+    padding: 0.22in 0.28in;
+    margin: 0.28in 0;
+    page-break-inside: avoid;
+  }
+
+  .archetype-number {
+    font-family: 'Inter', sans-serif;
+    font-size: 7.5pt;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.04in;
+  }
+
+  .archetype-name {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-size: 14pt;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 0.06in;
+    line-height: 1.2;
+  }
+
+  .archetype-quote {
+    font-family: 'Inter', sans-serif;
+    font-size: 9.5pt;
+    font-style: italic;
+    color: var(--text-light);
+    margin-bottom: 0.12in;
+    padding-bottom: 0.12in;
+    border-bottom: 0.5pt solid var(--border);
+  }
+
+  .archetype-body p {
+    font-size: 9.5pt;
+    color: var(--text-mid);
+    margin-bottom: 0.08in;
+    line-height: 1.7;
+  }
+
+  .archetype-meta {
+    display: flex;
+    gap: 0.4in;
+    margin-top: 0.1in;
+    padding-top: 0.1in;
+    border-top: 0.5pt solid var(--border);
+  }
+
+  .archetype-meta-item {
+    flex: 1;
+  }
+
+  .meta-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 2pt;
+  }
+
+  .meta-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 8.5pt;
+    color: var(--navy);
+    line-height: 1.5;
+  }
+
+  /* Tier Box */
+  .tier-box {
+    page-break-inside: avoid;
+    margin: 0.22in 0;
+  }
+
+  .tier-header {
+    background: var(--navy);
+    color: var(--white);
+    padding: 0.1in 0.22in;
+    border-radius: 3pt 3pt 0 0;
+    display: flex;
+    align-items: center;
+    gap: 0.15in;
+  }
+
+  .tier-badge {
+    background: var(--gold);
+    color: var(--navy);
+    font-family: 'Inter', sans-serif;
+    font-size: 7pt;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 2pt 6pt;
+    border-radius: 2pt;
+  }
+
+  .tier-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 9.5pt;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .tier-time {
+    margin-left: auto;
+    font-family: 'Inter', sans-serif;
+    font-size: 7.5pt;
+    color: rgba(255,255,255,0.55);
+  }
+
+  .tier-body {
+    background: var(--white);
+    border: 1pt solid var(--border);
+    border-top: none;
+    border-radius: 0 0 3pt 3pt;
+    padding: 0.18in 0.22in;
+  }
+
+  .tier-body p {
+    font-size: 9.5pt;
+    margin-bottom: 0.06in;
+  }
+
+  .tier-body ol, .tier-body ul {
+    padding-left: 0.18in;
+    margin: 0.06in 0;
+  }
+
+  .tier-body li {
+    font-size: 9.5pt;
+    color: var(--text-mid);
+    line-height: 1.65;
+    margin-bottom: 3pt;
+  }
+
+  /* Checklist */
+  .checklist {
+    background: var(--white);
+    border: 1pt solid var(--border);
+    border-radius: 4pt;
+    padding: 0.22in 0.28in;
+    margin: 0.25in 0;
+  }
+
+  .checklist-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: 0.12in;
+    padding-bottom: 0.08in;
+    border-bottom: 1pt solid var(--border);
+  }
+
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.1in;
+    margin-bottom: 0.07in;
+    font-size: 9.5pt;
+    color: var(--text-mid);
+    line-height: 1.55;
+  }
+
+  .check-box {
+    display: inline-block;
+    width: 10pt;
+    height: 10pt;
+    min-width: 10pt;
+    border: 1.5pt solid var(--gold);
+    border-radius: 2pt;
+    margin-top: 1.5pt;
+  }
+
+  /* Table */
+  .premium-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.25in 0;
+    font-size: 9pt;
+  }
+
+  .premium-table thead tr {
+    background: var(--navy);
+  }
+
+  .premium-table thead th {
+    font-family: 'Inter', sans-serif;
+    font-size: 8pt;
+    font-weight: 600;
+    color: var(--white);
+    text-align: left;
+    padding: 0.1in 0.14in;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .premium-table tbody tr:nth-child(even) {
+    background: var(--gold-pale);
+  }
+
+  .premium-table tbody tr:nth-child(odd) {
+    background: var(--white);
+  }
+
+  .premium-table td {
+    font-family: 'Inter', sans-serif;
+    font-size: 9pt;
+    color: var(--text-mid);
+    padding: 0.08in 0.14in;
+    border-bottom: 0.5pt solid var(--border);
+    vertical-align: top;
+    line-height: 1.55;
+  }
+
+  .premium-table td:first-child {
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  /* Section divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 0.15in;
+    margin: 0.4in 0 0.3in 0;
+  }
+
+  .divider-line {
+    flex: 1;
+    height: 0.5pt;
+    background: linear-gradient(90deg, var(--gold), var(--border));
+  }
+
+  .divider-dot {
+    width: 5pt;
+    height: 5pt;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+
+  /* Principle Item */
+  .principle {
+    display: flex;
+    gap: 0.18in;
+    padding: 0.18in 0;
+    border-bottom: 0.5pt solid var(--border);
+    page-break-inside: avoid;
+  }
+
+  .principle-num {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-size: 22pt;
+    font-weight: 700;
+    color: var(--gold-light);
+    min-width: 0.45in;
+    line-height: 1;
+    padding-top: 2pt;
+  }
+
+  .principle-content {}
+
+  .principle-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4pt;
+  }
+
+  .principle-body {
+    font-family: 'Inter', sans-serif;
+    font-size: 9.5pt;
+    color: var(--text-mid);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* Summary table */
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.25in 0;
+  }
+
+  .summary-table thead tr {
+    background: var(--navy-light);
+  }
+
+  .summary-table thead th {
+    font-family: 'Inter', sans-serif;
+    font-size: 8pt;
+    font-weight: 600;
+    color: var(--gold-light);
+    text-align: left;
+    padding: 0.1in 0.16in;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .summary-table tbody tr {
+    border-bottom: 0.5pt solid var(--border);
+  }
+
+  .summary-table tbody tr:nth-child(even) { background: var(--gold-pale); }
+  .summary-table tbody tr:nth-child(odd)  { background: var(--white); }
+
+  .summary-table td {
+    font-family: 'Inter', sans-serif;
+    font-size: 9pt;
+    color: var(--text-mid);
+    padding: 0.09in 0.16in;
+    vertical-align: top;
+    line-height: 1.6;
+  }
+
+  .summary-table td:first-child {
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 9.5pt;
+  }
+
+  .summary-table td:last-child {
+    font-style: italic;
+    color: var(--accent-teal);
+  }
+
+  /* Closing Page */
+  .closing-page {
+    page: section-break;
+    page-break-before: always;
+    background: var(--navy);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1.0in;
+    text-align: center;
+    position: relative;
+  }
+
+  .closing-page::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4pt;
+    background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
+  }
+
+  .closing-page::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4pt;
+    background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
+  }
+
+  .closing-brand {
+    font-family: 'Inter', sans-serif;
+    font-size: 8pt;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.3in;
+  }
+
+  .closing-title {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-size: 30pt;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.25;
+    margin-bottom: 0.18in;
+  }
+
+  .closing-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 11pt;
+    font-weight: 300;
+    color: rgba(255,255,255,0.6);
+    max-width: 4.5in;
+    line-height: 1.7;
+    margin-bottom: 0.45in;
+  }
+
+  .closing-divider {
+    width: 1.5in;
+    height: 1pt;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 0.45in;
+  }
+
+  .closing-meta {
+    font-family: 'Inter', sans-serif;
+    font-size: 8pt;
+    color: rgba(255,255,255,0.35);
+    line-height: 1.8;
+  }
+
+  /* Page break helpers */
+  .page-break { page-break-after: always; }
+  .avoid-break { page-break-inside: avoid; }
+
+  /* Intro highlight */
+  .intro-highlight {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    border-radius: 4pt;
+    padding: 0.32in 0.38in;
+    margin: 0.3in 0;
+  }
+
+  .intro-highlight p {
+    font-family: 'Inter', sans-serif;
+    font-size: 11pt;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.75;
+    margin: 0;
+    font-weight: 300;
+  }
+
+  .intro-highlight strong {
+    color: var(--gold-light);
+  }
+
+  /* Two-column layout */
+  .two-col {
+    display: flex;
+    gap: 0.3in;
+    margin: 0.2in 0;
+  }
+
+  .col {
+    flex: 1;
+  }
+
+  /* Scoring box */
+  .score-box {
+    background: var(--gold-pale);
+    border: 1pt solid var(--gold-light);
+    border-radius: 4pt;
+    padding: 0.18in 0.22in;
+    margin-top: 0.2in;
+  }
+
+  .score-box p {
+    font-size: 9.5pt;
+    color: var(--text);
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     COVER PAGE
+============================================================ -->
+<div class="cover">
+  <div class="cover-accent-bar"></div>
+  <div class="cover-inner">
+    <div class="cover-brand">Lazy Scholar PH &nbsp;·&nbsp; Mental Clarity Playbooks</div>
+    <div class="cover-series">Framework Series — Vol. 03</div>
+    <h1 class="cover-title">The Overthinker's<br><span class="cover-title-accent">Operating System</span></h1>
+    <p class="cover-subtitle">A framework-first guide to rewiring your decision architecture, breaking analysis loops, and building the internal certainty you've been searching for externally.</p>
+    <div class="cover-divider"></div>
+    <div class="cover-promise">
+      <p>"You don't need to think less. You need a system so reliable that your brain stops needing to think as hard."</p>
+    </div>
+  </div>
+  <div class="cover-footer">
+    <span class="cover-footer-brand">Lazy Scholar PH</span>
+    <span class="cover-footer-year">© 2026</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     TABLE OF CONTENTS
+============================================================ -->
+<div class="toc-page">
+  <div class="toc-label">Contents</div>
+  <h2 class="toc-title">What's Inside</h2>
+  <div class="toc-grid">
+    <div class="toc-item">
+      <span class="toc-num">Intro</span>
+      <div class="toc-text">Why You Can't Stop Thinking
+        <span class="toc-sub">The nervous system explanation. Why "just decide" fails.</span>
+      </div>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">01</span>
+      <div class="toc-text">The Overthinking Taxonomy
+        <span class="toc-sub">5 loop types · Self-assessment checklist · Identify your archetype</span>
+      </div>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">02</span>
+      <div class="toc-text">The Interrupt Protocol
+        <span class="toc-sub">3-tier response stack · Label &amp; Release · Pattern interrupts</span>
+      </div>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">03</span>
+      <div class="toc-text">The 3-Layer Decision Filter
+        <span class="toc-sub">Reversibility test · Stakes assessment · Time cost audit</span>
+      </div>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">04</span>
+      <div class="toc-text">Ambient Uncertainty Management
+        <span class="toc-sub">Open loop inventory · Worry windows · The "Not Yet" box</span>
+      </div>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">05</span>
+      <div class="toc-text">The Certainty Replacement System
+        <span class="toc-sub">Decision journal · Calibration test · Validation audit</span>
+      </div>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">06</span>
+      <div class="toc-text">Your Daily Overthinking Toolkit
+        <span class="toc-sub">Morning priming · Mid-day check-in · Evening debrief · Weekly practices</span>
+      </div>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">07</span>
+      <div class="toc-text">Weekly Overthinking Audit
+        <span class="toc-sub">Full accountability checklist · Progress tracking framework</span>
+      </div>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">End</span>
+      <div class="toc-text">The Overthinker's Manifesto
+        <span class="toc-sub">7 core operating principles · System summary at a glance</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     INTRODUCTION
+============================================================ -->
+<div class="content page-break">
+  <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div></div>
+
+  <h1 class="section-title">Why You Can't Stop Thinking</h1>
+  <p style="font-size:9.5pt; color:var(--text-light); text-transform:uppercase; letter-spacing:0.12em; font-weight:600; margin-bottom:0.18in;">Introduction</p>
+
+  <div class="intro-highlight">
+    <p>Overthinking is not a character flaw. It is not a productivity problem. It is not even a cognitive problem in the traditional sense.<br><br>
+    <strong>Overthinking is a nervous system event masquerading as rational thought.</strong></p>
+  </div>
+
+  <p>When your brain encounters ambiguity — unclear outcomes, reversible-but-important decisions, social unknowns — it registers the uncertainty as a low-grade threat. The prefrontal cortex loops through scenarios in an attempt to eliminate that threat through preparation.</p>
+
+  <p>The problem: ambiguity cannot be resolved through more thinking. More inputs generate more variables. More variables generate more loops. More loops generate more fatigue. Fatigue generates worse decisions. And worse decisions generate more doubt — restarting the entire cycle.</p>
+
+  <div class="callout">
+    <div class="callout-label">The Core Insight</div>
+    <p>Most advice tells you to "think less" or "just decide." This fails because it targets symptoms, not architecture. You cannot willpower your way out of a nervous system response. You need a <strong>decision architecture that reduces cognitive load before uncertainty activates the loop.</strong></p>
+  </div>
+
+  <p>This guide doesn't ask you to become less thoughtful. It installs a system — the Overthinker's Operating System — that provides your brain with reliable pathways for decision-making, uncertainty management, and self-trust building. When your OS works, your brain stops needing to loop.</p>
+
+  <div class="pull-quote">
+    <p>"The goal is not to think less. The goal is to build a system so reliable that your brain stops needing to think as hard."</p>
+  </div>
+
+  <p>Five components. One integrated system. Everything in this guide is designed to work together. You'll notice overlap between sections — that's intentional. The system is mutually reinforcing.</p>
+</div>
+
+<!-- ============================================================
+     SECTION BREAK 01
+============================================================ -->
+<div class="section-break">
+  <div class="section-break-num">Section 01</div>
+  <div class="section-break-title">The Overthinking Taxonomy</div>
+  <p class="section-break-desc">Not all overthinking is the same. Treating it as monolithic is why most advice fails. Before you can interrupt a loop, you must identify which loop you're running.</p>
+</div>
+
+<!-- ============================================================
+     SECTION 01 CONTENT
+============================================================ -->
+<div class="content">
+  <h1 class="section-title">The Overthinking Taxonomy</h1>
+  <p>The five archetypes below cover the most common overthinking patterns. Most people run 1–2 dominant types with occasional crossover. Identifying yours is the first step — because the interrupt strategy differs by type.</p>
+
+  <!-- Archetype 1 -->
+  <div class="archetype-card avoid-break">
+    <div class="archetype-number">Archetype 01</div>
+    <div class="archetype-name">The Infinite Researcher</div>
+    <div class="archetype-quote">"I just need one more piece of information before I decide."</div>
+    <div class="archetype-body">
+      <p>You gather data compulsively. Every source spawns three new questions. The research phase never ends because completion would force a commitment. Information becomes a delay mechanism, not a decision tool. You are not learning — you are stalling.</p>
+      <p>The research loop is especially insidious because it feels productive. The brain registers "I'm gathering information" as responsible behavior. Meanwhile, the decision drifts further away.</p>
+    </div>
+    <div class="archetype-meta">
+      <div class="archetype-meta-item">
+        <div class="meta-label">Primary Trigger</div>
+        <div class="meta-value">Decisions with uncertain outcomes or permanent consequences</div>
+      </div>
+      <div class="archetype-meta-item">
+        <div class="meta-label">Signature Thought</div>
+        <div class="meta-value">"I'm not ready yet."</div>
+      </div>
+      <div class="archetype-meta-item">
+        <div class="meta-label">Interrupt Strategy</div>
+        <div class="meta-value">Information cutoff: set a hard data deadline before research begins</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Archetype 2 -->
+  <div class="archetype-card avoid-break">
+    <div class="archetype-number">Archetype 02</div>
+    <div class="archetype-name">The Consequence Catastrophizer</div>
+    <div class="archetype-quote">"But what if the worst happens?"</div>
+    <div class="archetype-body">
+      <p>You fast-forward to the most negative outcome and reverse-engineer the evidence that could lead there. The brain's negativity bias amplifies low-probability scenarios until they feel like near-certainties. The catastrophe feels real, urgent, and statistically likely — even when it isn't.</p>
+      <p>Catastrophizers often have accurate threat-detection in high-stakes situations. The system is not broken; it's over-calibrated.</p>
+    </div>
+    <div class="archetype-meta">
+      <div class="archetype-meta-item">
+        <div class="meta-label">Primary Trigger</div>
+        <div class="meta-value">High-stakes decisions or unfamiliar environments</div>
+      </div>
+      <div class="archetype-meta-item">
+        <div class="meta-label">Signature Thought</div>
+        <div class="meta-value">"This could ruin everything."</div>
+      </div>
+      <div class="archetype-meta-item">
+        <div class="meta-label">Interrupt Strategy</div>
+        <div class="meta-value">Calibration Test (Section 5): track prediction accuracy to recalibrate threat assessment</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Archetype 3 -->
+  <div class="archetype-card avoid-break">
+    <div class="archetype-number">Archetype 03</div>
+    <div class="archetype-name">The Retroactive Editor</div>
+    <div class="archetype-quote">"I should have done that differently."</div>
+    <div class="archetype-body">
+      <p>Past decisions replay on a loop, searching for the moment you could have changed the outcome. Your mind rehearses alternate histories that cannot be acted upon, consuming present-moment attention and generating shame or regret about events that have already concluded.</p>
+      <p>Retroactive editing is your brain's attempt to learn from errors — but the loop has no exit condition. It runs indefinitely without producing actionable insight.</p>
+    </div>
+    <div class="archetype-meta">
+      <div class="archetype-meta-item">
+        <div class="meta-label">Primary Trigger</div>
+        <div class="meta-value">Outcomes that didn't go as hoped; social mistakes</div>
+      </div>
+      <div class="archetype-meta-item">
+        <div class="meta-label">Signature Thought</div>
+        <div class="meta-value">"Why did I say that?"</div>
+      </div>
+      <div class="archetype-meta-item">
+        <div class="meta-label">Interrupt Strategy</div>
+        <div class="meta-value">Tomorrow Test + Decision Journal to extract lessons and formally close the loop</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Archetype 4 -->
+  <div class="archetype-card avoid-break">
+    <div class="archetype-number">Archetype 04</div>
+    <div class="archetype-name">The Social Simulator</div>
+    <div class="archetype-quote">"How will they react if I say…?"</div>
+    <div class="archetype-body">
+      <p>You pre-run social interactions in your head — rehearsing conversations, anticipating judgments, scripting responses for scenarios that may never occur. This consumes hours of mental bandwidth on phantom social situations, often leading to over-preparation for conversations that go nothing like your script.</p>
+      <p>Social simulation is especially common in people who have experienced social rejection or criticism. The brain treats social uncertainty the same way it treats physical danger.</p>
+    </div>
+    <div class="archetype-meta">
+      <div class="archetype-meta-item">
+        <div class="meta-label">Primary Trigger</div>
+        <div class="meta-value">Conflict avoidance; fear of judgment or rejection</div>
+      </div>
+      <div class="archetype-meta-item">
+        <div class="meta-label">Signature Thought</div>
+        <div class="meta-value">"I need to prepare for every possible reaction."</div>
+      </div>
+      <div class="archetype-meta-item">
+        <div class="meta-label">Interrupt Strategy</div>
+        <div class="meta-value">Time cap + one-sentence script maximum; deploy the "Good Enough" trigger word</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Archetype 5 -->
+  <div class="archetype-card avoid-break">
+    <div class="archetype-number">Archetype 05</div>
+    <div class="archetype-name">The Identity Auditor</div>
+    <div class="archetype-quote">"But who am I, really, if I make this choice?"</div>
+    <div class="archetype-body">
+      <p>Decisions become existential. Career moves, relationships, and lifestyle choices trigger deep self-questioning that spirals far beyond the decision itself. Every choice becomes a referendum on your core identity, values, and worthiness — which means no decision is ever "just a decision."</p>
+      <p>Identity auditors often have strong values and high self-awareness — the problem is applying this introspective capacity to every decision regardless of scale.</p>
+    </div>
+    <div class="archetype-meta">
+      <div class="archetype-meta-item">
+        <div class="meta-label">Primary Trigger</div>
+        <div class="meta-value">Transitions, values misalignment, major life crossroads</div>
+      </div>
+      <div class="archetype-meta-item">
+        <div class="meta-label">Signature Thought</div>
+        <div class="meta-value">"I don't know what I want."</div>
+      </div>
+      <div class="archetype-meta-item">
+        <div class="meta-label">Interrupt Strategy</div>
+        <div class="meta-value">Certainty Replacement System (Section 5): build stable internal reference points</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div></div>
+
+  <h2 class="subsection">Self-Assessment Checklist</h2>
+  <p>Mark every statement that applies to you on a regular basis:</p>
+
+  <div class="checklist">
+    <div class="checklist-title">Which Loops Are You Running?</div>
+    <div class="checklist-item"><span class="check-box"></span><span>I delay decisions by seeking more information</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>I frequently imagine worst-case outcomes in vivid detail</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>I replay past decisions and conversations mentally</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>I mentally rehearse future conversations in detail before they happen</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>I struggle to decide because every choice feels identity-defining</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>I need external validation before committing to decisions</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>I experience decision fatigue by mid-morning or early afternoon</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>I frequently second-guess decisions I've already committed to</span></div>
+  </div>
+
+  <div class="score-box">
+    <p><strong>Scoring:</strong> 1–2 marks = Situational overthinker — targeted interventions needed.&nbsp; 3–5 = Chronic pattern — implement the full interrupt protocol.&nbsp; 6+ = Full Operating System overhaul recommended.</p>
+  </div>
+</div>
+
+<!-- ============================================================
+     SECTION BREAK 02
+============================================================ -->
+<div class="section-break">
+  <div class="section-break-num">Section 02</div>
+  <div class="section-break-title">The Interrupt Protocol</div>
+  <p class="section-break-desc">Pattern interruption must happen before the loop reaches full activation. Once deep in the cycle, cognitive override is nearly impossible. This is a tiered response system.</p>
+</div>
+
+<!-- ============================================================
+     SECTION 02 CONTENT
+============================================================ -->
+<div class="content">
+  <h1 class="section-title">The Interrupt Protocol</h1>
+  <p>The interrupt must match the stage of the loop. Applying a Tier 1 technique to a Tier 3 spiral won't work. Applying a Tier 3 technique to early-stage rumination is excessive and trains avoidance. Match the tier to the activation level.</p>
+
+  <!-- Tier 1 -->
+  <div class="tier-box avoid-break">
+    <div class="tier-header">
+      <span class="tier-badge">Tier 1</span>
+      <span class="tier-title">Early Warning — Loop is just starting</span>
+      <span class="tier-time">Recognition window: 0–90 seconds</span>
+    </div>
+    <div class="tier-body">
+      <p><strong>Technique: Label &amp; Release</strong></p>
+      <ol>
+        <li>Name the loop type out loud or in writing: <em>"This is the Catastrophizer running."</em></li>
+        <li>Say (mentally or aloud): <em>"I see you. This is a loop."</em></li>
+        <li>Redirect to a physical anchor: press both feet flat on the floor, name 5 things you can see.</li>
+      </ol>
+      <p style="margin-top:0.08in; font-size:9pt; color:var(--text-light);"><em>Why it works:</em> Labeling activates the prefrontal cortex and reduces amygdala activation — you're inserting a cognitive brake before the emotional response escalates.</p>
+    </div>
+  </div>
+
+  <!-- Tier 2 -->
+  <div class="tier-box avoid-break">
+    <div class="tier-header">
+      <span class="tier-badge">Tier 2</span>
+      <span class="tier-title">Active Loop — Difficulty redirecting</span>
+      <span class="tier-time">Recognition window: 2–15 minutes in</span>
+    </div>
+    <div class="tier-body">
+      <p><strong>Technique: Physical Pattern Interrupt + Transcription</strong></p>
+      <ol>
+        <li><strong>Change your physical state immediately</strong> — stand up, change rooms, splash cold water on your face, or do 10 jumping jacks. Your body leads; your mind follows.</li>
+        <li>Set a <strong>10-minute timer</strong> and write every thought in the loop onto paper without editing. Don't solve — just transcribe. Empty the loop onto the page.</li>
+        <li>After the timer: circle only the thoughts that require <strong>action today.</strong> Cross out everything else with a single line.</li>
+      </ol>
+      <p style="margin-top:0.08in; font-size:9pt; color:var(--text-light);"><em>Why it works:</em> Physical state change disrupts the neurological activation pattern. Transcription externalizes the loop, reducing the cognitive load of holding it in working memory.</p>
+    </div>
+  </div>
+
+  <!-- Tier 3 -->
+  <div class="tier-box avoid-break">
+    <div class="tier-header">
+      <span class="tier-badge">Tier 3</span>
+      <span class="tier-title">Deep Spiral — Same thought, 30+ minutes</span>
+      <span class="tier-time">Recognition window: Loop has been running for 30+ minutes</span>
+    </div>
+    <div class="tier-body">
+      <p><strong>Technique: Tomorrow Test + Time-Horizon Assignment</strong></p>
+      <ol>
+        <li>Write the question you're looping on at the top of a page.</li>
+        <li>Write: <em>"Will this still matter in 3 days? 3 months? 3 years?"</em></li>
+        <li>Assign it a time-horizon category: <strong>Immediate / Weekly / Monthly / Yearly.</strong></li>
+        <li>If it's not Immediate: schedule it. Add it to your Open Loop Inventory (Section 4) with a specific review date. Close the mental tab explicitly: <em>"I've parked this. I will return to it on [date]."</em></li>
+      </ol>
+      <p style="margin-top:0.08in; font-size:9pt; color:var(--text-light);"><em>Why it works:</em> The time-horizon question interrupts the brain's tendency to treat all concerns as equally urgent. A scheduled review date gives the brain permission to release the loop.</p>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div></div>
+
+  <h2 class="subsection">The "Good Enough" Trigger Word</h2>
+  <p>Choose a personal trigger word for decision closure. This word signals to your brain that a decision has been made and the loop should terminate.</p>
+
+  <div class="callout">
+    <div class="callout-label">How to Use It</div>
+    <p>Once you've applied your decision filter (Section 3) and reached a conclusion, say your trigger word — out loud if possible. Suggested words: <strong>"Locked." "Done." "Committed." "Shipped." "Closed."</strong><br><br>
+    This creates a ritual closing signal that trains your nervous system to release the loop. Reopening a committed decision without new information breaks the protocol — and the brain learns this quickly.</p>
+  </div>
+</div>
+
+<!-- ============================================================
+     SECTION BREAK 03
+============================================================ -->
+<div class="section-break">
+  <div class="section-break-num">Section 03</div>
+  <div class="section-break-title">The 3-Layer Decision Filter</div>
+  <p class="section-break-desc">Most overthinking is spending high-stakes deliberation time on low-stakes decisions. This filter routes every decision to the correct deliberation depth.</p>
+</div>
+
+<!-- ============================================================
+     SECTION 03 CONTENT
+============================================================ -->
+<div class="content">
+  <h1 class="section-title">The 3-Layer Decision Filter</h1>
+  <p>The core dysfunction of chronic overthinking is treating all decisions as equally important. The 3-Layer Decision Filter routes every decision through three sequential assessments — each one building on the last to determine how much deliberation the decision genuinely warrants.</p>
+
+  <h2 class="subsection">Layer 1 — The Reversibility Test</h2>
+  <p>Ask yourself: <em>"If I make this decision and it's wrong, how hard is it to undo?"</em></p>
+
+  <table class="premium-table avoid-break">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Reversibility</th>
+        <th>Examples</th>
+        <th>Max Deliberation Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Type A</td>
+        <td>Fully reversible (can undo within 24 hrs)</td>
+        <td>What to eat, what to wear, minor daily choices</td>
+        <td>2 minutes</td>
+      </tr>
+      <tr>
+        <td>Type B</td>
+        <td>Mostly reversible (cost to change, but doable)</td>
+        <td>Commitments to events, non-refundable purchases</td>
+        <td>30 minutes</td>
+      </tr>
+      <tr>
+        <td>Type C</td>
+        <td>Difficult to reverse (significant time/financial cost)</td>
+        <td>Career moves, relationship commitments, major purchases</td>
+        <td>1–3 days</td>
+      </tr>
+      <tr>
+        <td>Type D</td>
+        <td>Irreversible or near-irreversible</td>
+        <td>Geographic relocation, ending major relationships</td>
+        <td>Up to 2 weeks</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <div class="callout-label">The Core Rule</div>
+    <p>Never spend Type D deliberation time on a Type A–B decision. After 2 weeks of Decision Log practice (see below), most overthinkers discover they are spending 70–80% of their total deliberation time on Type A and B decisions.</p>
+  </div>
+
+  <h2 class="subsection">Layer 2 — The Stakes Assessment</h2>
+  <p>Ask: <em>"What is the realistic range of outcomes, best to worst?"</em></p>
+
+  <p>Rate the decision on two dimensions on a scale of 1–10:</p>
+
+  <div class="two-col avoid-break">
+    <div class="col">
+      <div class="info-box">
+        <p><strong>Impact Score</strong><br>
+        How significantly does this decision affect a core life area — health, finances, relationships, work, identity?<br><br>
+        1 = barely noticeable &nbsp;|&nbsp; 10 = life-changing</p>
+      </div>
+    </div>
+    <div class="col">
+      <div class="info-box">
+        <p><strong>Likelihood Score</strong><br>
+        What is the realistic probability of the worst-case outcome actually occurring?<br><br>
+        1 = extremely unlikely &nbsp;|&nbsp; 10 = highly probable</p>
+      </div>
+    </div>
+  </div>
+
+  <p>Multiply both scores: <strong>Impact × Likelihood = Stakes Score</strong></p>
+
+  <table class="premium-table avoid-break">
+    <thead>
+      <tr><th>Stakes Score</th><th>Tier</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1–25</td><td>Low Stakes</td><td>Decide within Type A/B time limits. Do not escalate deliberation.</td></tr>
+      <tr><td>26–60</td><td>Medium Stakes</td><td>Apply the full 3-layer filter. One round of reflection, then commit.</td></tr>
+      <tr><td>61–100</td><td>High Stakes</td><td>Full filter + seek one trusted outside perspective before committing.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="subsection">Layer 3 — The Time Cost Audit</h2>
+  <p>Ask: <em>"Is my deliberation time proportionate to this decision's stakes and reversibility?"</em></p>
+
+  <div class="pull-quote">
+    <p>"Your deliberation time should never exceed 10% of the time-horizon of the decision's impact. A decision affecting the next 7 days has a maximum of 17 hours of deliberation. Not 17 consecutive hours — 17 hours total across all deliberation sessions."</p>
+  </div>
+
+  <h3 class="item-title">Decision Log Template</h3>
+  <p>Track this for 2 weeks to identify your deliberation patterns:</p>
+
+  <table class="premium-table avoid-break">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Decision</th>
+        <th>Type (A/B/C/D)</th>
+        <th>Stakes Score</th>
+        <th>Time Cap</th>
+        <th>Decided By</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="color:var(--text-light); font-style:italic; font-weight:400;">Date</td><td style="color:var(--text-light); font-style:italic; font-weight:400;">Description</td><td style="color:var(--text-light); font-style:italic; font-weight:400;">A/B/C/D</td><td style="color:var(--text-light); font-style:italic; font-weight:400;">/100</td><td style="color:var(--text-light); font-style:italic; font-weight:400;">Deadline</td><td style="color:var(--text-light); font-style:italic; font-weight:400;">Time</td></tr>
+      <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+      <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+      <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============================================================
+     SECTION BREAK 04
+============================================================ -->
+<div class="section-break">
+  <div class="section-break-num">Section 04</div>
+  <div class="section-break-title">Ambient Uncertainty Management</div>
+  <p class="section-break-desc">Some loops aren't triggered by active decisions — they're triggered by open loops hovering in background awareness. These must be managed, not resolved.</p>
+</div>
+
+<!-- ============================================================
+     SECTION 04 CONTENT
+============================================================ -->
+<div class="content">
+  <h1 class="section-title">Ambient Uncertainty Management</h1>
+  <p>The Zeigarnik Effect describes how the brain keeps incomplete tasks in active working memory — generating cognitive background noise. You've experienced this as the nagging sense that you're forgetting something, or the way a problem keeps surfacing in your mind even when you're trying to do other things.</p>
+
+  <div class="callout">
+    <div class="callout-label">The Key Insight</div>
+    <p>The solution to open loops is not to close them all — most can't be closed yet. The solution is to <strong>park them outside your head</strong> in a trusted system. Once captured, your brain knows the loop is held externally. The neural activation maintaining it in working memory diminishes.</p>
+  </div>
+
+  <h2 class="subsection">The Open Loop Inventory</h2>
+  <p>Every Sunday evening, spend 15 minutes doing a complete brain drain:</p>
+
+  <div class="checklist">
+    <div class="checklist-title">Weekly Brain Drain Protocol</div>
+    <div class="checklist-item"><span class="check-box"></span><span>Write down every open loop, unresolved question, and pending decision — without filtering</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Categorize each as: <strong>Actionable now</strong> (schedule next action) / <strong>Waiting on input</strong> (log + set follow-up date) / <strong>Not yet</strong> (defer) / <strong>Releasable</strong> (consciously let go)</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Assign a review date to all deferred items (30–90 days)</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Strike through any item you've chosen to release</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Review your Open Loop Inventory at the start of each week — not mid-week</span></div>
+  </div>
+
+  <h2 class="subsection">Scheduled Worry Windows</h2>
+  <p>Attempting to suppress anxious thoughts increases their frequency — this is the "white bear" phenomenon: try not to think about a white bear, and you'll think of nothing else. Suppression doesn't work. Scheduling does.</p>
+
+  <div class="tier-box avoid-break">
+    <div class="tier-header">
+      <span class="tier-badge">Protocol</span>
+      <span class="tier-title">Daily Worry Window Setup</span>
+    </div>
+    <div class="tier-body">
+      <ol>
+        <li>Designate one <strong>20-minute block per day</strong> as your Worry Window (late afternoon, at least 2 hours before bed).</li>
+        <li>When a worry surfaces outside this window: write it on a running list and tell yourself: <em>"I'll think about that at 4pm."</em></li>
+        <li>At your window: open the list, sit with each worry for up to 2 minutes, then write one action or acceptance response for each.</li>
+        <li>Close the window completely when the 20 minutes end.</li>
+      </ol>
+      <p style="margin-top:0.08in; font-size:9pt; color:var(--text-light);"><em>Timeline:</em> After 2–3 weeks, the brain learns that worries are being processed on schedule. Unscheduled worry activation decreases measurably. This is consistent with cognitive behavioral protocols for anxiety.</p>
+    </div>
+  </div>
+
+  <h2 class="subsection">The "Not Yet" Box</h2>
+  <p>Some uncertainties have no actionable path forward. They need time, external inputs, or circumstances to resolve themselves. Continuing to think about them does not accelerate resolution — it only generates distress.</p>
+
+  <div class="callout">
+    <div class="callout-label">How It Works</div>
+    <p>Create a physical or digital "Not Yet" list — a designated space for questions you cannot currently answer. When a loop fires on one of these items, your response is: <em>"That's in the Not Yet box. There's no productive action I can take right now. I'll revisit it on [scheduled date]."</em><br><br>
+    <strong>Examples of Not Yet items:</strong> "Will this relationship work long-term?" · "Is this career path right for me?" · "Should we move cities next year?" · "Will I feel better about this decision over time?"</p>
+  </div>
+</div>
+
+<!-- ============================================================
+     SECTION BREAK 05
+============================================================ -->
+<div class="section-break">
+  <div class="section-break-num">Section 05</div>
+  <div class="section-break-title">The Certainty Replacement System</div>
+  <p class="section-break-desc">Overthinking often masks low self-trust. When you don't trust your own judgment, external certainty becomes essential before action. This system builds internal reference points.</p>
+</div>
+
+<!-- ============================================================
+     SECTION 05 CONTENT
+============================================================ -->
+<div class="content">
+  <h1 class="section-title">The Certainty Replacement System</h1>
+
+  <p>The deepest root of chronic overthinking is not a lack of information — it's a lack of confidence in your own judgment. When your internal reference points are weak, every decision requires external validation before action. This section builds the evidence base that reduces that dependency.</p>
+
+  <h2 class="subsection">The Decision Journal Protocol</h2>
+  <p>The most powerful tool available for building self-trust is a consistent record of your decisions and their outcomes. Most people have only their emotional memory of outcomes — which is heavily biased toward failures, not successes.</p>
+
+  <div class="tier-box avoid-break">
+    <div class="tier-header">
+      <span class="tier-badge">Weekly</span>
+      <span class="tier-title">Decision Journal Format</span>
+    </div>
+    <div class="tier-body">
+      <ol>
+        <li><strong>Decision Made:</strong> What did you decide?</li>
+        <li><strong>Reasoning Used:</strong> What was your core logic or gut instinct?</li>
+        <li><strong>Predicted Outcome:</strong> What did you expect to happen?</li>
+        <li><strong>Actual Outcome (fill in later):</strong> What actually happened?</li>
+        <li><strong>Process Quality:</strong> Was your decision <em>process</em> sound, even if the outcome wasn't ideal?</li>
+      </ol>
+      <p style="margin-top:0.08in; font-size:9pt; color:var(--text-light);">After 60–90 days of consistent logging, patterns emerge: you'll discover which domains your instincts are most reliable in, and you'll have objective data countering the narrative that you "can't trust yourself."</p>
+    </div>
+  </div>
+
+  <h2 class="subsection">The Calibration Test</h2>
+  <p>Most overthinkers believe their worst-case scenarios are far more likely than they actually are. The Calibration Test corrects this with data.</p>
+
+  <div class="archetype-card avoid-break">
+    <div class="archetype-number">30-Day Practice</div>
+    <div class="archetype-name">Recalibrate Your Threat Assessment</div>
+    <div class="archetype-body">
+      <p>For each significant worry, complete this log:</p>
+      <table class="premium-table" style="margin:0.1in 0;">
+        <thead>
+          <tr><th>Worry</th><th>My Predicted Probability</th><th>Did It Happen?</th><th>Actual Probability</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="font-style:italic; font-weight:400; color:var(--text-light);">Write fear here</td><td style="font-style:italic; font-weight:400; color:var(--text-light);">e.g., 70%</td><td style="font-style:italic; font-weight:400; color:var(--text-light);">Y / N</td><td style="font-style:italic; font-weight:400; color:var(--text-light);">Recalculate</td></tr>
+          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:0.08in;">Most overthinkers discover their feared outcomes occur at 10–20% of the rate they predict. This data is your recalibration tool — more effective than any affirmation.</p>
+    </div>
+  </div>
+
+  <h2 class="subsection">The Validation Audit</h2>
+  <p>Identify the specific domains where you currently require external validation before acting:</p>
+
+  <div class="checklist">
+    <div class="checklist-title">Validation Dependency Audit</div>
+    <div class="checklist-item"><span class="check-box"></span><span>Work decisions — waiting for approval before moving forward</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Creative output — needing others to confirm quality</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Personal choices — seeking consensus before committing</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Values alignment — checking if others agree with your priorities</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Physical appearance decisions — requiring external confirmation</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Relationship decisions — needing others' opinions before acting</span></div>
+  </div>
+
+  <p>For each checked domain, define a <strong>self-certification standard</strong> — a minimum bar you set for yourself that, once met, eliminates the need for external confirmation.</p>
+
+  <div class="callout">
+    <div class="callout-label">Example Self-Certification Standards</div>
+    <p>"My minimum standard for publishing writing is that it clearly explains one idea in plain language. If it meets that standard, I publish — without seeking approval first."<br><br>
+    "My minimum standard for a work decision is that it aligns with the project's stated goal. If it does, I proceed without waiting for explicit permission."</p>
+  </div>
+
+  <h2 class="subsection">Building Self-Trust Reference Points</h2>
+  <p>Once per week, record three data points in your journal:</p>
+
+  <div class="two-col avoid-break">
+    <div class="col">
+      <div class="info-box">
+        <p><strong>One decision that went well</strong><br>
+        Evidence that your judgment is reliable. Include what you decided and why it worked.</p>
+      </div>
+    </div>
+    <div class="col">
+      <div class="info-box">
+        <p><strong>One good process despite uncertain outcome</strong><br>
+        A decision that demonstrated sound reasoning, even if results were mixed.</p>
+      </div>
+    </div>
+  </div>
+  <div class="info-box" style="margin-top:0.1in;">
+    <p><strong>One moment of self-trust that paid off</strong><br>
+    A time you trusted your instincts, did not loop, and it turned out fine — or survivable.</p>
+  </div>
+
+  <p style="margin-top:0.18in;">After 90 days, this list becomes your evidence base. When the uncertainty loop fires, you can point to it: <em>"I have made good decisions before. My judgment is not the liability the loop claims it is."</em></p>
+</div>
+
+<!-- ============================================================
+     SECTION BREAK 06
+============================================================ -->
+<div class="section-break">
+  <div class="section-break-num">Sections 06–07</div>
+  <div class="section-break-title">Your Daily Toolkit &amp; Weekly Audit</div>
+  <p class="section-break-desc">The system only works if it's maintained. These routines are the infrastructure that keeps the Operating System running.</p>
+</div>
+
+<!-- ============================================================
+     SECTION 06–07 CONTENT
+============================================================ -->
+<div class="content">
+  <h1 class="section-title">Your Daily Overthinking Toolkit</h1>
+
+  <h2 class="subsection">Morning Routine — 10 Minutes</h2>
+
+  <div class="tier-box avoid-break">
+    <div class="tier-header">
+      <span class="tier-badge">AM</span>
+      <span class="tier-title">Decision Priming</span>
+      <span class="tier-time">10 minutes</span>
+    </div>
+    <div class="tier-body">
+      <ol>
+        <li>Identify your top 3 decisions or commitments for the day</li>
+        <li>Assign each a Type (A/B/C/D) and a time cap for deliberation</li>
+        <li>If any loops fired overnight, add them to the Open Loop Inventory or Worry Window list</li>
+        <li>State your trigger word for the day — internalize the commitment to use it</li>
+      </ol>
+    </div>
+  </div>
+
+  <h2 class="subsection">Mid-Day Check-In — 5 Minutes</h2>
+
+  <div class="checklist">
+    <div class="checklist-title">Mid-Day Diagnostic</div>
+    <div class="checklist-item"><span class="check-box"></span><span>Have I been looping on anything since this morning?</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Is there an open loop I need to park in the inventory?</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Am I spending deliberation time proportionate to each decision's weight?</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Did I respect my morning time caps?</span></div>
+  </div>
+
+  <h2 class="subsection">Evening Debrief — 5 Minutes</h2>
+
+  <div class="checklist">
+    <div class="checklist-title">Evening Wind-Down</div>
+    <div class="checklist-item"><span class="check-box"></span><span>What decision did I make today that I'm proud of?</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Was there a loop I interrupted successfully? Note the tier and technique used.</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Add any new open loops to the inventory (not to be resolved tonight)</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Add one data point to the Self-Trust Reference list</span></div>
+  </div>
+
+  <h2 class="subsection">Weekly Practice Schedule</h2>
+
+  <table class="premium-table avoid-break">
+    <thead>
+      <tr><th>Practice</th><th>Day</th><th>Duration</th><th>Key Output</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Open Loop Brain Drain</td><td>Sunday evening</td><td>15 min</td><td>Updated inventory</td></tr>
+      <tr><td>Decision Journal Entry</td><td>Sunday</td><td>10 min</td><td>One week of decisions logged</td></tr>
+      <tr><td>Worry Window</td><td>Daily</td><td>20 min</td><td>Processed worry list</td></tr>
+      <tr><td>Calibration Review</td><td>Friday</td><td>10 min</td><td>Updated prediction accuracy log</td></tr>
+      <tr><td>Weekly Audit Checklist</td><td>Sunday</td><td>10 min</td><td>Progress assessment</td></tr>
+    </tbody>
+  </table>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div></div>
+
+  <h1 class="section-title" style="margin-top:0.3in;">Weekly Overthinking Audit</h1>
+  <p>Use this checklist at the end of each week to track progress and identify where the system needs reinforcement.</p>
+
+  <div class="checklist">
+    <div class="checklist-title">Decision Quality</div>
+    <div class="checklist-item"><span class="check-box"></span><span>Identified my dominant overthinking archetype(s) this week</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Applied the Reversibility Test to at least one major decision</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Used the Stakes Assessment (Impact × Likelihood) on at least one decision</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Respected deliberation time caps at least 3 out of 5 days</span></div>
+  </div>
+
+  <div class="checklist">
+    <div class="checklist-title">Loop Interruption</div>
+    <div class="checklist-item"><span class="check-box"></span><span>Successfully used a Tier 1, 2, or 3 interrupt at least once</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Used my trigger word for decision closure at least once</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Did not spend Type C/D deliberation time on a Type A/B decision</span></div>
+  </div>
+
+  <div class="checklist">
+    <div class="checklist-title">Ambient Management</div>
+    <div class="checklist-item"><span class="check-box"></span><span>Completed the Open Loop Brain Drain</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Used Scheduled Worry Window at least 4 times this week</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Added at least one item to the "Not Yet" box appropriately</span></div>
+  </div>
+
+  <div class="checklist">
+    <div class="checklist-title">Certainty Building</div>
+    <div class="checklist-item"><span class="check-box"></span><span>Logged at least one decision in the Decision Journal</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Added at least one data point to Self-Trust Reference Points</span></div>
+    <div class="checklist-item"><span class="check-box"></span><span>Identified one domain where I reduced external validation dependency</span></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SECTION BREAK — MANIFESTO
+============================================================ -->
+<div class="section-break">
+  <div class="section-break-num">Final Section</div>
+  <div class="section-break-title">The Overthinker's Manifesto</div>
+  <p class="section-break-desc">Seven operating principles for someone who has installed the system. Return to these when the loops try to start again.</p>
+</div>
+
+<!-- ============================================================
+     MANIFESTO + SUMMARY
+============================================================ -->
+<div class="content">
+  <h1 class="section-title">The Overthinker's Manifesto</h1>
+  <p>These are the operating principles. They are not affirmations — they are architectural truths about decisions, uncertainty, and the thinking mind. Read them when the system feels like too much effort. Return to them when the loops resurface.</p>
+
+  <div class="principle avoid-break">
+    <div class="principle-num">1</div>
+    <div class="principle-content">
+      <div class="principle-title">Ambiguity is not a threat. It is the default condition of living.</div>
+      <p class="principle-body">The goal is not to eliminate uncertainty. The goal is to move skillfully within it. Every human decision is made under incomplete information. The question is not "when will I have enough to know?" — it is "how do I act well with what I have?"</p>
+    </div>
+  </div>
+
+  <div class="principle avoid-break">
+    <div class="principle-num">2</div>
+    <div class="principle-content">
+      <div class="principle-title">Most decisions are more reversible than they feel in the moment.</div>
+      <p class="principle-body">The weight you feel is your nervous system's assessment, not the objective stakes. Run the Reversibility Test. You'll find that most decisions causing the most distress are Type A or B — fully or mostly reversible within days.</p>
+    </div>
+  </div>
+
+  <div class="principle avoid-break">
+    <div class="principle-num">3</div>
+    <div class="principle-content">
+      <div class="principle-title">A good process is more valuable than a perfect outcome.</div>
+      <p class="principle-body">You cannot control results. You can control the quality of your decision-making. Evaluate yourself on process, not outcome. A well-reasoned decision that produces an unexpected result is not a failure — it is data.</p>
+    </div>
+  </div>
+
+  <div class="principle avoid-break">
+    <div class="principle-num">4</div>
+    <div class="principle-content">
+      <div class="principle-title">Deliberation has a point of diminishing returns.</div>
+      <p class="principle-body">After a threshold — unique to each decision type — more thinking degrades rather than improves decision quality. The loop is not working. It is stalling. You have hit the threshold when new information is no longer changing your answer.</p>
+    </div>
+  </div>
+
+  <div class="principle avoid-break">
+    <div class="principle-num">5</div>
+    <div class="principle-content">
+      <div class="principle-title">Self-trust is built through evidence, not through confidence.</div>
+      <p class="principle-body">Don't wait to feel confident before trusting yourself. Track decisions, review accuracy, build the file. Let the data teach you that you are more capable and accurate than the loop claims. Confidence is a downstream effect of evidence, not a prerequisite.</p>
+    </div>
+  </div>
+
+  <div class="principle avoid-break">
+    <div class="principle-num">6</div>
+    <div class="principle-content">
+      <div class="principle-title">Open loops are a feature, not a failure.</div>
+      <p class="principle-body">Not everything must be resolved now. Some questions belong in the "Not Yet" box for months. Intelligent patience is not avoidance — it is the recognition that certain answers can only emerge with time, experience, or information you don't have yet.</p>
+    </div>
+  </div>
+
+  <div class="principle avoid-break">
+    <div class="principle-num">7</div>
+    <div class="principle-content">
+      <div class="principle-title">Your trigger word is a commitment device. Honor it.</div>
+      <p class="principle-body">Once you've applied the filter and said your trigger word, the decision is closed. Reopening it without genuinely new information is what feeds the loop. Treating commitments as final is how you train your nervous system to release, not re-engage.</p>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div></div>
+
+  <h1 class="section-title">The System at a Glance</h1>
+
+  <table class="summary-table avoid-break">
+    <thead>
+      <tr>
+        <th>Component</th>
+        <th>Core Function</th>
+        <th>Primary Tool</th>
+        <th>Frequency</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Overthinking Taxonomy</td>
+        <td>Identify your loop type before intervening</td>
+        <td>Self-assessment checklist</td>
+        <td>Once + as needed</td>
+      </tr>
+      <tr>
+        <td>Interrupt Protocol</td>
+        <td>Break cycles before full escalation</td>
+        <td>3-Tier interrupt stack</td>
+        <td>As loops arise</td>
+      </tr>
+      <tr>
+        <td>3-Layer Decision Filter</td>
+        <td>Route decisions to correct deliberation depth</td>
+        <td>Reversibility + Stakes + Time</td>
+        <td>Every decision</td>
+      </tr>
+      <tr>
+        <td>Ambient Management</td>
+        <td>Park open loops outside your head</td>
+        <td>Open Loop Inventory</td>
+        <td>Weekly + daily</td>
+      </tr>
+      <tr>
+        <td>Certainty Replacement</td>
+        <td>Build internal self-trust through evidence</td>
+        <td>Decision Journal</td>
+        <td>Weekly</td>
+      </tr>
+      <tr>
+        <td>Daily Toolkit</td>
+        <td>Maintain the operating system daily</td>
+        <td>Morning/evening routines</td>
+        <td>Daily</td>
+      </tr>
+      <tr>
+        <td>Weekly Audit</td>
+        <td>Track progress and recalibrate</td>
+        <td>Audit checklist</td>
+        <td>Weekly</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============================================================
+     CLOSING PAGE
+============================================================ -->
+<div class="closing-page">
+  <div class="closing-brand">Lazy Scholar PH &nbsp;·&nbsp; Mental Clarity Playbooks</div>
+  <h2 class="closing-title">You have the system.<br>Now use it.</h2>
+  <p class="closing-sub">The loops don't disappear overnight. But every time you apply the filter, interrupt the cycle, or park an open loop instead of spinning on it — you're training a new response. The Operating System is installed. The rest is repetition.</p>
+  <div class="closing-divider"></div>
+  <div class="closing-meta">
+    <p>The Overthinker's Operating System</p>
+    <p>Published by Lazy Scholar PH &nbsp;·&nbsp; Mental Clarity Playbooks Series</p>
+    <p>© 2026 Lazy Scholar PH. All rights reserved.</p>
+    <p style="margin-top:0.15in; font-size:7pt;">This guide is for educational and informational purposes.<br>
+    For clinical anxiety or mental health concerns, please consult a qualified professional.</p>
+  </div>
+</div>
+
+</body>
+</html>
