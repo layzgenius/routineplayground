@@ -1,0 +1,36 @@
+name: Trigger Routine C (Instagram Promo Agent)
+
+on:
+  push:
+    paths:
+      - 'ai-pipeline/drafts/**.html'
+    branches:
+      - main
+
+jobs:
+  trigger-instagram-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Verify HTML draft exists
+        id: check
+        run: |
+          count=$(find ai-pipeline/drafts -name "*.html" | wc -l)
+          if [ "$count" -gt 0 ]; then
+            echo "status=ready" >> $GITHUB_OUTPUT
+            echo "Found $count HTML draft(s). Triggering Instagram Promo Agent."
+          else
+            echo "status=not_ready" >> $GITHUB_OUTPUT
+            echo "No HTML drafts found. Skipping trigger."
+          fi
+
+      - name: Trigger Routine C via API
+        if: steps.check.outputs.status == 'ready'
+        run: |
+          curl -X POST "${{ secrets.ROUTINE_C_ENDPOINT }}" \
+            -H "x-api-key: ${{ secrets.ROUTINE_C_TOKEN }}" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "Content-Type: application/json" \
+            -d '{}'
