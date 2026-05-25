@@ -1,19 +1,19 @@
 name: Trigger Routine B (PDF Production Agent)
-
+ 
 on:
   push:
     paths:
       - 'ai-pipeline/research/latest-topic.md'
     branches:
       - main
-
+ 
 jobs:
   trigger-pdf-agent:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
+ 
       - name: Verify topic brief status
         id: check
         run: |
@@ -22,14 +22,14 @@ jobs:
           else
             echo "status=not_ready" >> $GITHUB_OUTPUT
           fi
-
+ 
       - name: Trigger Routine B via API
         if: steps.check.outputs.status == 'ready'
         env:
           ENDPOINT: ${{ secrets.ROUTINE_B_ENDPOINT }}
           TOKEN: ${{ secrets.ROUTINE_B_TOKEN }}
         run: |
-        curl -v -X POST "$ENDPOINT" \
+          curl -v -X POST "$ENDPOINT" \
             -H "Authorization: Bearer $TOKEN" \
             -H "anthropic-version: 2023-06-01" \
             -H "anthropic-beta: experimental-cc-routine-2026-04-01" 2>&1 || true
