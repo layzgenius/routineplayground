@@ -30,3 +30,4 @@ jobs:
           curl -X POST "${{ secrets.ROUTINE_B_ENDPOINT }}" \
           -H "Authorization: Bearer ${{ secrets.ROUTINE_B_TOKEN }}" \
             -H "anthropic-version: 2023-06-01"
+-H "anthropic-beta: experimental-cc-routine-2026-04-01"
