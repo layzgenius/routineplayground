@@ -1,0 +1,33 @@
+name: Trigger Routine C (Instagram Promo Agent)
+
+on:
+  push:
+    paths:
+      - 'ai-pipeline/drafts/**.html'
+    branches:
+      - main
+
+jobs:
+  trigger-instagram-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Verify HTML draft exists
+        id: check
+        run: |
+          count=$(find ai-pipeline/drafts -name "*.html" | wc -l)
+          if [ "$count" -gt 0 ]; then
+            echo "status=ready" >> $GITHUB_OUTPUT
+          else
+            echo "status=not_ready" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Trigger Routine C via API
+        if: steps.check.outputs.status == 'ready'
+        run: |
+          curl -X POST "https://api.anthropic.com/v1/claude_code/routines/trig_01PUuhnKpjBRvd8L9mKnGVsP/fire" \
+            -H "Authorization: Bearer ${{ secrets.ROUTINE_C_TOKEN }}" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "anthropic-beta: experimental-cc-routine-2026-04-01"
