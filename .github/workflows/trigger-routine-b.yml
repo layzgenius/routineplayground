@@ -29,7 +29,7 @@ jobs:
           ENDPOINT: ${{ secrets.ROUTINE_B_ENDPOINT }}
           TOKEN: ${{ secrets.ROUTINE_B_TOKEN }}
         run: |
-          curl -X POST "$ENDPOINT" \
+        curl -v -X POST "$ENDPOINT" \
             -H "Authorization: Bearer $TOKEN" \
             -H "anthropic-version: 2023-06-01" \
-            -H "anthropic-beta: experimental-cc-routine-2026-04-01"
+            -H "anthropic-beta: experimental-cc-routine-2026-04-01" 2>&1 || true
