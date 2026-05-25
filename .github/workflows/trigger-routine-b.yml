@@ -31,4 +31,4 @@ jobs:
             -H "x-api-key: ${{ secrets.ROUTINE_B_TOKEN }}" \
             -H "anthropic-version: 2023-06-01" \
             -H "Content-Type: application/json" \
-            -d '{}'
+        
