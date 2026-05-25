@@ -1,0 +1,32 @@
+name: Trigger Routine B (PDF Production Agent)
+
+on:
+  push:
+    paths:
+      - 'ai-pipeline/research/latest-topic.md'
+    branches:
+      - main
+
+jobs:
+  trigger-pdf-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check file contains READY_FOR_WRITING
+        uses: actions/checkout@v4
+
+      - name: Verify topic brief status
+        id: check
+        run: |
+          if grep -q "Status: READY_FOR_WRITING" ai-pipeline/research/latest-topic.md; then
+            echo "status=ready" >> $GITHUB_OUTPUT
+          else
+            echo "status=not_ready" >> $GITHUB_OUTPUT
+            echo "File exists but status is not READY_FOR_WRITING. Skipping trigger."
+          fi
+
+      - name: Trigger Routine B via API
+        if: steps.check.outputs.status == 'ready'
+        run: |
+          curl -X POST "${{ secrets.ROUTINE_B_ENDPOINT }}" \
+            -H "x-api-key: ${{ secrets.ROUTINE_B_TOKEN }}" \
+            -H "anthropic-version: 2023-06-01"
