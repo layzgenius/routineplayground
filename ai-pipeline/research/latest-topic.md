@@ -1,4 +1,4 @@
-Status: READY_FOR_WRITING
+Status: COMPLETED
 
 Title: The Discipline Architecture
 
