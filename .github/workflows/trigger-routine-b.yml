@@ -11,7 +11,7 @@ jobs:
   trigger-pdf-agent:
     runs-on: ubuntu-latest
     steps:
-      - name: Check file contains READY_FOR_WRITING
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Verify topic brief status
@@ -21,12 +21,15 @@ jobs:
             echo "status=ready" >> $GITHUB_OUTPUT
           else
             echo "status=not_ready" >> $GITHUB_OUTPUT
-            echo "File exists but status is not READY_FOR_WRITING. Skipping trigger."
           fi
 
       - name: Trigger Routine B via API
         if: steps.check.outputs.status == 'ready'
+        env:
+          ENDPOINT: ${{ secrets.ROUTINE_B_ENDPOINT }}
+          TOKEN: ${{ secrets.ROUTINE_B_TOKEN }}
         run: |
-          curl -X POST "${{ secrets.ROUTINE_B_ENDPOINT }}" \
-            -H "x-api-key: ${{ secrets.ROUTINE_B_TOKEN }}" \
-            -H "anthropic-version: 2023-06-01"
+          curl -X POST "$ENDPOINT" \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "anthropic-beta: experimental-cc-routine-2026-04-01"
