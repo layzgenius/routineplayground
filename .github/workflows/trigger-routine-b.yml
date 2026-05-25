@@ -28,5 +28,5 @@ jobs:
         if: steps.check.outputs.status == 'ready'
         run: |
           curl -X POST "${{ secrets.ROUTINE_B_ENDPOINT }}" \
-            -H "x-api-key: ${{ secrets.ROUTINE_B_TOKEN }}" \
+          -H "Authorization: Bearer ${{ secrets.ROUTINE_B_TOKEN }}" \
             -H "anthropic-version: 2023-06-01"
