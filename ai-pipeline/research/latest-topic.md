@@ -1,30 +1,28 @@
 Status: READY_FOR_WRITING
 
-Title: The Overthinking Protocol: A Structured System for Quieting the Loop
+Title: The Burnout Architecture: A Systems Map for Nervous System Recovery
 
-Core Problem: Chronic overthinking is not laziness or irrationality — it is the brain's default mode network running unchecked. People lose hours, decisions, relationships, and sleep to recursive mental loops they cannot exit voluntarily. Most people who overthink are not weak-willed — they are operating without a protocol to interrupt the loop.
+Core Problem: Burnout is not fixed by rest. Most people rest without recovering, return to the same conditions, and cycle back into depletion within weeks. There is no map for structured recovery — only vague advice to slow down. People blame themselves for being "weak" when the actual failure is the absence of a recovery system.
 
-Psychological Insight: Overthinking is a regulatory failure, not a character flaw. The brain defaults to simulation and threat-scanning when it lacks structured input. Protocols that externalize cognition — writing, constraint-setting, decision timers — interrupt the loop by giving the prefrontal cortex a concrete task to execute instead of a void to fill. The loop perpetuates itself because it feels like thinking, but it is actually the absence of directed thought. External structure is the intervention.
+Psychological Insight: Burnout is a state of chronic sympathetic nervous system dominance. The body's threat-detection system has been chronically overstimulated to the point of deregulation. Recovery requires parasympathetic activation through consistent, low-stimulation inputs — not vacation, but nervous system protocol. The body does not distinguish emotional stress from physical stress; it accumulates load indiscriminately. Rest without structural change does not produce recovery — it produces temporary symptom relief followed by re-entry into the same depleting conditions.
 
-Reader Transformation: From someone trapped in recursive mental loops, chronically delayed on decisions, and exhausted by their own internal noise — to someone who can identify their overthinking pattern type, apply a loop exit protocol in real time, and move forward with decisions despite uncertainty. They finish the PDF with a personal cognitive architecture: a loop audit, a decision constraint system, and a daily design that prevents conditions where loops take hold.
+Reader Transformation: From chronically exhausted, running on cortisol, unable to feel motivated even after rest — to someone who understands their depletion architecture, has a 30-day recovery protocol, and has redesigned their environment to prevent re-entry into burnout. They finish the PDF with a personal load map, a 4-input recovery stack, a re-entry pacing plan, and an environmental design that removes the structural conditions burnout requires.
 
-Why People Would Buy It: Overthinking is one of the highest-searched mental health-adjacent topics globally. It is universal across demographics — students, professionals, creatives, anxious achievers. The "protocol" framing positions it as a systematic fix, not therapy or motivation. It completes the Lazy Scholar PH core trilogy alongside the Dopamine Architecture and Discipline Architecture — addressing the mental interference layer that prevents the other systems from functioning. Price point $17–$37.
+Why People Would Buy It: Burnout is a top-3 searched workplace and mental health term globally. Post-pandemic burnout remains unresolved for millions across demographics — professionals, students, parents, creatives. The Architecture framing positions this as a system, not self-care advice, separating it cleanly from wellness content. It completes the Lazy Scholar PH core trilogy alongside Dopamine Architecture and Discipline Architecture — addressing the energy depletion layer that prevents every other system from functioning. Price point $17–$27.
 
 Suggested Sections/Frameworks:
-- The Default Mode Network Explained — Why Your Brain Loops
-- Loop Taxonomy — Identifying Your Overthinking Pattern Type (Rumination, Catastrophizing, Analysis Paralysis, Perfectionism Spiral)
-- The Externalization Method — Getting Thoughts Out of the Head and Onto a System
-- The 3-Constraint Decision Framework — Cutting Through Analysis Paralysis with Hard Limits
-- The Loop Exit Protocol — A Step-by-Step Real-Time Interruption Sequence
-- The Uncertainty Anchor — Tolerating Not Knowing Without Spiraling Into Contingency Planning
-- Daily Cognitive Architecture — Designing a Day That Removes the Conditions Loops Require
+- The Burnout Load Model — Why Rest Fails Without Structural Change
+- Nervous System State Audit — Mapping Your Depletion Pattern
+- The 4 Recovery Inputs — Sleep Architecture, Sensory Reduction, Social Calibration, Cognitive Offloading
+- The Re-Entry Protocol — Returning to Output Without Re-Triggering Burnout
+- Environment Redesign — Removing the Structural Sources of Load
+- The 30-Day Burnout Exit Map
 
 Practical Applications:
-- Loop audit worksheet (identify trigger contexts, loop types, and average loop duration)
-- Decision constraint template (time limit, information limit, option limit for any decision)
-- Daily cognitive offload journaling protocol (structured AM brain dump to reduce default mode activation)
-- 5-step real-time loop exit sequence card (portable protocol for in-the-moment application)
-- Overthinking trigger map (environmental and emotional conditions that reliably activate loops)
-- 30-day cognitive architecture implementation plan with weekly review checkpoints
+- Nervous system state tracker (daily check-in tool for monitoring sympathetic vs. parasympathetic balance)
+- Daily load-reduction checklist (concrete actions to reduce accumulating stress load each day)
+- 30-day recovery calendar (phased recovery plan with weekly milestones and output limits)
+- Re-entry pacing guide (structured return to full capacity without relapse into depletion)
+- Environmental audit worksheet (identifying and removing the structural conditions that sustain burnout)
 
-Score: 89/100
+Score: 96/100
