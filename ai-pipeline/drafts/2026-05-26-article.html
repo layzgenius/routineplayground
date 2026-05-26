@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>The Burnout Architecture — Lazy Scholar PH</title>
+<style>
+/* ─── BASE ─── */
+@page { size: A4; margin: 18mm 18mm 16mm 18mm; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 11pt; }
+body { font-family: Georgia, "Times New Roman", serif; background: #FFFFFF; color: #2D2D2D; line-height: 1.75; }
+
+/* ─── COLOURS ─── */
+/* --navy #1A1A2E  --gold #C9A84C  --teal #2A7B8C  --cream #FAF8F3 --slate #3D5A6C */
+
+/* ════════════════════════════
+   TITLE PAGE
+════════════════════════════ */
+.title-page {
+  page-break-after: always;
+  background: #0D1B2A;
+  margin: -18mm -18mm 0 -18mm;
+  padding: 35mm 22mm 30mm;
+  text-align: center;
+  min-height: 100vh;
+}
+.brand-badge {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+  font-weight: bold;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #C9A84C;
+  border: 1px solid #C9A84C;
+  display: inline-block;
+  padding: 5px 14px;
+  margin-bottom: 18mm;
+}
+.trilogy-label {
+  font-family: Arial, sans-serif;
+  font-size: 7pt;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 6mm;
+}
+.title-ornament {
+  width: 50px;
+  height: 3px;
+  background: #C9A84C;
+  margin: 0 auto 10mm;
+}
+.main-title {
+  font-family: Georgia, serif;
+  font-size: 38pt;
+  font-weight: bold;
+  color: #FFFFFF;
+  line-height: 1.15;
+  margin-bottom: 8mm;
+}
+.main-title .gold { color: #C9A84C; }
+.subtitle {
+  font-family: Georgia, serif;
+  font-size: 12pt;
+  font-style: italic;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 14mm;
+}
+.title-rule { width: 70px; height: 1px; background: rgba(201,168,76,0.4); margin: 0 auto 10mm; }
+.title-descriptor {
+  font-family: Arial, sans-serif;
+  font-size: 7.5pt;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+.title-promise {
+  margin-top: 14mm;
+  display: inline-block;
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.3);
+  padding: 8mm 14mm;
+  max-width: 130mm;
+}
+.title-promise p {
+  font-family: Georgia, serif;
+  font-size: 10pt;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.7;
+  font-style: italic;
+}
+.title-promise-head {
+  font-family: Arial, sans-serif;
+  font-size: 7pt;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #C9A84C;
+  margin-bottom: 4mm;
+}
+.title-footer {
+  margin-top: 18mm;
+  font-family: Arial, sans-serif;
+  font-size: 7.5pt;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 1px;
+}
+
+/* ════════════════════════════
+   TABLE OF CONTENTS
+════════════════════════════ */
+.toc-page { page-break-after: always; }
+.toc-header {
+  text-align: center;
+  border-bottom: 2px solid #0D1B2A;
+  padding-bottom: 5mm;
+  margin-bottom: 8mm;
+}
+.toc-header h2 {
+  font-family: Georgia, serif;
+  font-size: 20pt;
+  font-weight: bold;
+  color: #0D1B2A;
+}
+.toc-row {
+  border-bottom: 1px solid #DDD5C8;
+  padding: 5px 0;
+  overflow: hidden;
+}
+.toc-num { font-family: Arial, sans-serif; font-size: 7.5pt; font-weight: bold; color: #C9A84C; float: left; width: 28px; padding-top: 3px; }
+.toc-title { font-family: Georgia, serif; font-size: 10.5pt; color: #0D1B2A; float: left; }
+.toc-title.sub { color: #4A6275; font-size: 9.5pt; padding-left: 22px; font-style: italic; }
+.toc-clear { clear: both; }
+.toc-section-label {
+  font-family: Arial, sans-serif;
+  font-size: 6.5pt;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #C9A84C;
+  padding: 6mm 0 2mm;
+}
+
+/* ════════════════════════════
+   SECTION DIVIDERS
+════════════════════════════ */
+.section-divider {
+  page-break-before: always;
+  background: #0D1B2A;
+  margin: 0 -18mm;
+  padding: 22mm 22mm 18mm;
+  text-align: center;
+  margin-bottom: 10mm;
+}
+.section-divider.no-break { page-break-before: avoid; }
+.divider-part {
+  font-family: Arial, sans-serif;
+  font-size: 7pt;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #C9A84C;
+  margin-bottom: 3mm;
+}
+.divider-title {
+  font-family: Georgia, serif;
+  font-size: 22pt;
+  font-weight: bold;
+  color: #FFFFFF;
+  line-height: 1.25;
+  margin-bottom: 4mm;
+}
+.divider-subtitle {
+  font-family: Georgia, serif;
+  font-size: 10pt;
+  font-style: italic;
+  color: rgba(255,255,255,0.5);
+}
+.divider-line {
+  width: 50px;
+  height: 2px;
+  background: #C9A84C;
+  margin: 5mm auto 0;
+}
+
+/* ════════════════════════════
+   BODY TYPOGRAPHY
+════════════════════════════ */
+h2 {
+  font-family: Georgia, serif;
+  font-size: 17pt;
+  font-weight: bold;
+  color: #0D1B2A;
+  margin: 8mm 0 4mm;
+  line-height: 1.2;
+}
+h3 {
+  font-family: Arial, sans-serif;
+  font-size: 10.5pt;
+  font-weight: bold;
+  color: #0D1B2A;
+  letter-spacing: 0.5px;
+  margin: 7mm 0 3mm;
+  text-transform: uppercase;
+}
+h4 {
+  font-family: Georgia, serif;
+  font-size: 11pt;
+  font-weight: bold;
+  font-style: italic;
+  color: #2A7B8C;
+  margin: 5mm 0 2mm;
+}
+p { margin-bottom: 4mm; }
+p + p { margin-top: 0; }
+strong { color: #0D1B2A; }
+
+/* ════════════════════════════
+   SPECIAL ELEMENTS
+════════════════════════════ */
+.intro-quote {
+  border-left: 3px solid #C9A84C;
+  margin: 6mm 0;
+  padding: 3mm 0 3mm 6mm;
+  font-style: italic;
+  color: #3D5A6C;
+  font-size: 11.5pt;
+  line-height: 1.65;
+}
+
+.pull-quote {
+  background: #0D1B2A;
+  color: #FFFFFF;
+  margin: 8mm 0;
+  padding: 8mm 10mm;
+  border-left: 4px solid #C9A84C;
+  page-break-inside: avoid;
+}
+.pull-quote p {
+  font-family: Georgia, serif;
+  font-size: 11.5pt;
+  font-style: italic;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.85);
+  margin: 0;
+}
+.pull-quote .pq-label {
+  font-family: Arial, sans-serif;
+  font-size: 6.5pt;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #C9A84C;
+  margin-bottom: 3mm;
+  display: block;
+}
+
+.callout {
+  background: #F5F0E8;
+  border: 1px solid #DDD5C8;
+  border-top: 3px solid #C9A84C;
+  margin: 8mm 0;
+  padding: 6mm 8mm;
+  page-break-inside: avoid;
+}
+.callout-label {
+  font-family: Arial, sans-serif;
+  font-size: 6.5pt;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #C9A84C;
+  font-weight: bold;
+  margin-bottom: 3mm;
+}
+.callout p {
+  font-family: Georgia, serif;
+  font-size: 10.5pt;
+  color: #2D2D2D;
+  margin-bottom: 2mm;
+}
+.callout p:last-child { margin-bottom: 0; }
+.callout strong { color: #0D1B2A; }
+.callout ol, .callout ul { margin-left: 6mm; }
+.callout li { font-size: 10.5pt; margin-bottom: 1mm; }
+
+/* ════════════════════════════
+   LISTS
+════════════════════════════ */
+ul, ol { margin: 3mm 0 4mm 7mm; }
+li { margin-bottom: 2mm; line-height: 1.65; }
+li strong { color: #0D1B2A; }
+
+/* ════════════════════════════
+   TABLES
+════════════════════════════ */
+.table-wrap { margin: 6mm 0; page-break-inside: avoid; overflow: hidden; }
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: #0D1B2A; }
+thead th {
+  font-family: Arial, sans-serif;
+  font-size: 8pt;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #C9A84C;
+  padding: 4mm 5mm;
+  text-align: left;
+  font-weight: bold;
+}
+tbody tr:nth-child(even) { background: #F5F0E8; }
+tbody tr:nth-child(odd) { background: #FDFBF8; }
+tbody td {
+  font-family: Georgia, serif;
+  font-size: 9.5pt;
+  color: #2D2D2D;
+  padding: 3mm 5mm;
+  vertical-align: top;
+  border-bottom: 1px solid #DDD5C8;
+}
+tbody td strong { color: #0D1B2A; }
+tbody td:first-child { font-weight: bold; color: #0D1B2A; }
+
+/* ════════════════════════════
+   WEEK BLOCKS (30-DAY MAP)
+════════════════════════════ */
+.week-block {
+  border: 1px solid #DDD5C8;
+  border-top: 4px solid #C9A84C;
+  margin: 8mm 0;
+  padding: 6mm 8mm;
+  page-break-inside: avoid;
+}
+.week-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4mm;
+  padding-bottom: 3mm;
+  border-bottom: 1px solid #DDD5C8;
+}
+.week-title {
+  font-family: Arial, sans-serif;
+  font-size: 9pt;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #0D1B2A;
+}
+.week-focus {
+  font-family: Georgia, serif;
+  font-size: 9pt;
+  font-style: italic;
+  color: #C9A84C;
+}
+.week-target {
+  background: #0D1B2A;
+  color: #C9A84C;
+  font-family: Arial, sans-serif;
+  font-size: 7.5pt;
+  letter-spacing: 1px;
+  padding: 1mm 4mm;
+  display: inline-block;
+  margin-bottom: 4mm;
+  font-weight: bold;
+}
+.checklist-item {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 10pt;
+  padding: 1.5mm 0;
+  padding-left: 7mm;
+  position: relative;
+  color: #2D2D2D;
+}
+.checklist-item::before {
+  content: "□";
+  position: absolute;
+  left: 0;
+  color: #C9A84C;
+  font-size: 10pt;
+}
+.milestone-label {
+  font-family: Arial, sans-serif;
+  font-size: 7pt;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #C9A84C;
+  margin-top: 4mm;
+  margin-bottom: 1mm;
+  font-weight: bold;
+}
+.milestone-text {
+  font-family: Georgia, serif;
+  font-size: 9.5pt;
+  color: #3D5A6C;
+  font-style: italic;
+  line-height: 1.55;
+}
+
+/* ════════════════════════════
+   TOOLS / WORKSHEETS
+════════════════════════════ */
+.tool-block {
+  border: 1px solid #2A7B8C;
+  margin: 8mm 0;
+  page-break-inside: avoid;
+}
+.tool-header {
+  background: #2A7B8C;
+  padding: 4mm 8mm;
+}
+.tool-header-num {
+  font-family: Arial, sans-serif;
+  font-size: 7pt;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 1mm;
+}
+.tool-header-title {
+  font-family: Georgia, serif;
+  font-size: 12pt;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+.tool-body { padding: 6mm 8mm; background: #FDFBF8; }
+.tracker-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2mm 0;
+  border-bottom: 1px solid #EDE8DE;
+}
+.tracker-label {
+  font-family: Georgia, serif;
+  font-size: 10pt;
+  color: #2D2D2D;
+  flex: 1;
+}
+.tracker-boxes {
+  display: flex;
+  gap: 3mm;
+}
+.tracker-box {
+  width: 9mm;
+  height: 7mm;
+  border: 1px solid #C9A84C;
+  font-family: Arial, sans-serif;
+  font-size: 7pt;
+  color: #C9A84C;
+  text-align: center;
+  line-height: 7mm;
+  font-weight: bold;
+}
+.tool-field {
+  border-bottom: 1px solid #C9A84C;
+  height: 6mm;
+  margin: 2mm 0 4mm;
+}
+.tool-field-label {
+  font-family: Arial, sans-serif;
+  font-size: 7.5pt;
+  color: #3D5A6C;
+  letter-spacing: 0.5px;
+  margin-top: 3mm;
+}
+.tool-table { width: 100%; border-collapse: collapse; }
+.tool-table th {
+  font-family: Arial, sans-serif;
+  font-size: 7.5pt;
+  font-weight: bold;
+  color: #2A7B8C;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2mm 3mm;
+  border-bottom: 2px solid #2A7B8C;
+  text-align: left;
+}
+.tool-table td {
+  font-family: Georgia, serif;
+  font-size: 9.5pt;
+  padding: 3mm 3mm;
+  border-bottom: 1px solid #EDE8DE;
+  vertical-align: top;
+}
+.tool-table .writeable { background: #F5F0E8; min-width: 25mm; }
+
+/* ════════════════════════════
+   ZONE CARDS
+════════════════════════════ */
+.zone-grid { margin: 5mm 0; }
+.zone-card {
+  border-left: 4px solid;
+  margin-bottom: 5mm;
+  padding: 4mm 6mm;
+  page-break-inside: avoid;
+}
+.zone-card.z1 { border-color: #4CAF50; background: #F4FBF4; }
+.zone-card.z2 { border-color: #C9A84C; background: #FBF8F0; }
+.zone-card.z3 { border-color: #C84B31; background: #FBF3F0; }
+.zone-card-title {
+  font-family: Arial, sans-serif;
+  font-size: 8pt;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 2mm;
+}
+.zone-card.z1 .zone-card-title { color: #2E7D32; }
+.zone-card.z2 .zone-card-title { color: #8B6914; }
+.zone-card.z3 .zone-card-title { color: #8B2500; }
+.zone-card p { font-size: 9.5pt; color: #2D2D2D; margin: 0; line-height: 1.55; }
+
+/* ════════════════════════════
+   SUMMARY SECTION
+════════════════════════════ */
+.summary-grid { margin: 5mm 0; }
+.summary-row {
+  display: flex;
+  border-bottom: 1px solid #DDD5C8;
+  align-items: stretch;
+}
+.summary-row:last-child { border-bottom: none; }
+.summary-num {
+  background: #0D1B2A;
+  color: #C9A84C;
+  font-family: Arial, sans-serif;
+  font-size: 14pt;
+  font-weight: bold;
+  width: 14mm;
+  min-width: 14mm;
+  text-align: center;
+  padding: 4mm 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.summary-content { padding: 4mm 6mm; flex: 1; }
+.summary-title {
+  font-family: Arial, sans-serif;
+  font-size: 9pt;
+  font-weight: bold;
+  color: #0D1B2A;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1mm;
+}
+.summary-body {
+  font-family: Georgia, serif;
+  font-size: 9.5pt;
+  color: #3D5A6C;
+  line-height: 1.55;
+}
+
+/* ════════════════════════════
+   EQUATION / CODE BLOCKS
+════════════════════════════ */
+.equation-block {
+  background: #0D1B2A;
+  padding: 5mm 8mm;
+  margin: 5mm 0;
+  text-align: center;
+  page-break-inside: avoid;
+}
+.equation-text {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11pt;
+  color: #C9A84C;
+  letter-spacing: 0.5px;
+}
+
+/* ════════════════════════════
+   FINAL / CLOSING PAGE
+════════════════════════════ */
+.closing-page {
+  page-break-before: always;
+  background: #0D1B2A;
+  margin: 8mm -18mm -16mm -18mm;
+  padding: 22mm 22mm 20mm;
+  text-align: center;
+}
+.closing-trilogy {
+  margin-bottom: 10mm;
+}
+.trilogy-item {
+  display: inline-block;
+  border: 1px solid rgba(201,168,76,0.3);
+  padding: 4mm 8mm;
+  margin: 2mm;
+  vertical-align: top;
+  max-width: 50mm;
+  text-align: center;
+}
+.trilogy-item-title {
+  font-family: Georgia, serif;
+  font-size: 9pt;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 1mm;
+}
+.trilogy-item-sub {
+  font-family: Arial, sans-serif;
+  font-size: 6.5pt;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 1px;
+}
+.trilogy-item.active .trilogy-item-title { color: #C9A84C; font-weight: bold; }
+.closing-title {
+  font-family: Georgia, serif;
+  font-size: 18pt;
+  color: #FFFFFF;
+  margin-bottom: 4mm;
+}
+.closing-sub {
+  font-family: Georgia, serif;
+  font-size: 10pt;
+  font-style: italic;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 8mm;
+}
+.closing-cta {
+  display: inline-block;
+  border: 2px solid #C9A84C;
+  padding: 4mm 12mm;
+  margin-bottom: 12mm;
+}
+.closing-cta-text {
+  font-family: Arial, sans-serif;
+  font-size: 8pt;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #C9A84C;
+}
+.closing-brand {
+  font-family: Arial, sans-serif;
+  font-size: 8.5pt;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.closing-copyright {
+  margin-top: 8mm;
+  font-family: Arial, sans-serif;
+  font-size: 7pt;
+  color: rgba(255,255,255,0.15);
+  line-height: 1.6;
+}
+
+/* ════════════════════════════
+   UTILITIES
+════════════════════════════ */
+.gold { color: #C9A84C; }
+.teal { color: #2A7B8C; }
+.rule { height: 1px; background: #DDD5C8; margin: 6mm 0; }
+.rule-gold { height: 2px; background: #C9A84C; margin: 6mm 0; }
+.spacer { margin-top: 5mm; }
+.text-center { text-align: center; }
+.no-break { page-break-inside: avoid; }
+.page-start { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     TITLE PAGE
+══════════════════════════════════════════════════════ -->
+<div class="title-page">
+  <div class="brand-badge">Lazy Scholar PH</div>
+  <div class="trilogy-label">The Architecture Trilogy &mdash; Volume III</div>
+  <div class="title-ornament"></div>
+  <div class="main-title">The <span class="gold">Burnout</span><br>Architecture</div>
+  <div class="subtitle">A Systems Map for Nervous System Recovery</div>
+  <div class="title-rule"></div>
+  <div class="title-descriptor">A 30-Day Structured Recovery Protocol</div>
+
+  <div class="title-promise">
+    <div class="title-promise-head">What You Will Have After 30 Days</div>
+    <p>A personal depletion map &bull; A 4-input recovery stack &bull; A re-entry pacing plan &bull; An environment redesigned to prevent burnout's return</p>
+  </div>
+
+  <div class="title-footer">lazyscholarph.com &nbsp;&bull;&nbsp; Premium Resource Series &nbsp;&bull;&nbsp; 2026</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TABLE OF CONTENTS
+══════════════════════════════════════════════════════ -->
+<div class="toc-page">
+  <div class="toc-header">
+    <h2>Table of Contents</h2>
+  </div>
+
+  <div class="toc-section-label">Foundation</div>
+
+  <div class="toc-row">
+    <div class="toc-num">01</div>
+    <div class="toc-title">Introduction: Why Rest Isn't Working</div>
+    <div class="toc-clear"></div>
+  </div>
+
+  <div class="toc-section-label">The Five-Part Architecture</div>
+
+  <div class="toc-row">
+    <div class="toc-num">02</div>
+    <div class="toc-title">Part I &mdash; The Burnout Load Model</div>
+    <div class="toc-clear"></div>
+  </div>
+  <div class="toc-row">
+    <div class="toc-num"></div>
+    <div class="toc-title sub">Why Rest Fails Without Structural Change</div>
+    <div class="toc-clear"></div>
+  </div>
+
+  <div class="toc-row">
+    <div class="toc-num">03</div>
+    <div class="toc-title">Part II &mdash; The Nervous System State Audit</div>
+    <div class="toc-clear"></div>
+  </div>
+  <div class="toc-row">
+    <div class="toc-num"></div>
+    <div class="toc-title sub">Mapping Your Depletion Pattern</div>
+    <div class="toc-clear"></div>
+  </div>
+
+  <div class="toc-row">
+    <div class="toc-num">04</div>
+    <div class="toc-title">Part III &mdash; The 4 Recovery Inputs</div>
+    <div class="toc-clear"></div>
+  </div>
+  <div class="toc-row">
+    <div class="toc-num"></div>
+    <div class="toc-title sub">Sleep Architecture &bull; Sensory Reduction &bull; Social Calibration &bull; Cognitive Offloading</div>
+    <div class="toc-clear"></div>
+  </div>
+
+  <div class="toc-row">
+    <div class="toc-num">05</div>
+    <div class="toc-title">Part IV &mdash; The Re-Entry Protocol</div>
+    <div class="toc-clear"></div>
+  </div>
+  <div class="toc-row">
+    <div class="toc-num"></div>
+    <div class="toc-title sub">Returning to Output Without Relapse</div>
+    <div class="toc-clear"></div>
+  </div>
+
+  <div class="toc-row">
+    <div class="toc-num">06</div>
+    <div class="toc-title">Part V &mdash; Environment Redesign</div>
+    <div class="toc-clear"></div>
+  </div>
+  <div class="toc-row">
+    <div class="toc-num"></div>
+    <div class="toc-title sub">Removing the Structural Sources of Load</div>
+    <div class="toc-clear"></div>
+  </div>
+
+  <div class="toc-section-label">Practical System</div>
+
+  <div class="toc-row">
+    <div class="toc-num">07</div>
+    <div class="toc-title">Your 30-Day Burnout Exit Map</div>
+    <div class="toc-clear"></div>
+  </div>
+  <div class="toc-row">
+    <div class="toc-num">08</div>
+    <div class="toc-title">Tools &amp; Worksheets</div>
+    <div class="toc-clear"></div>
+  </div>
+  <div class="toc-row">
+    <div class="toc-num">09</div>
+    <div class="toc-title">Summary: The Burnout Architecture at a Glance</div>
+    <div class="toc-clear"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     INTRODUCTION
+══════════════════════════════════════════════════════ -->
+<div class="section-divider no-break">
+  <div class="divider-part">Introduction</div>
+  <div class="divider-title">Why Rest Isn't Working</div>
+  <div class="divider-subtitle">The failure mode no one diagnoses correctly</div>
+  <div class="divider-line"></div>
+</div>
+
+<div class="intro-quote">
+  &ldquo;Burnout is not a character flaw. It is what happens when a high-performing nervous system operates without a recovery architecture.&rdquo;
+</div>
+
+<p>You took the weekend off. Maybe even the full week. You slept in, avoided your inbox, did the things people say you're supposed to do when you're burned out.</p>
+
+<p>And you came back exactly as depleted as when you left.</p>
+
+<p>This is the central failure of everything you've been told about burnout.</p>
+
+<p><strong>Rest is not recovery. It is the absence of input.</strong> Without structural change — to your environment, your cognitive load, your nervous system inputs — rest simply pauses depletion without reversing it. You return to the same conditions, your system re-accumulates the same load, and within weeks you're back at zero.</p>
+
+<p>The reason this cycle repeats is not weakness. It is the absence of a recovery architecture.</p>
+
+<p>Burnout is a state of chronic sympathetic nervous system dominance. Your threat-detection system has been overstimulated beyond its regulatory capacity. The body doesn't distinguish between a work deadline, a relationship conflict, a social obligation you're dreading, and a physical injury. It accumulates all of it as load — cortisol-producing, regulation-depleting, recovery-preventing load.</p>
+
+<p><strong>Until you change the load structure, you cannot exit burnout. You can only manage symptoms.</strong></p>
+
+<p>This guide builds the architecture that rest alone never gives you. By the end, you will have:</p>
+
+<ul>
+  <li>Mapped your personal depletion pattern using the <strong>Nervous System State Audit</strong></li>
+  <li>Implemented the <strong>4 Recovery Inputs</strong> that actually restore nervous system function</li>
+  <li>A <strong>Re-Entry Protocol</strong> that returns you to full output without triggering collapse</li>
+  <li>An environment redesigned to <strong>remove the structural conditions burnout requires</strong></li>
+  <li>A <strong>30-Day Burnout Exit Map</strong> with clear weekly milestones</li>
+</ul>
+
+<p>This is not a wellness guide. This is a systems document.</p>
+
+<!-- ══════════════════════════════════════════════════════
+     PART I — BURNOUT LOAD MODEL
+══════════════════════════════════════════════════════ -->
+<div class="section-divider">
+  <div class="divider-part">Part I</div>
+  <div class="divider-title">The Burnout Load Model</div>
+  <div class="divider-subtitle">Why Rest Fails Without Structural Change</div>
+  <div class="divider-line"></div>
+</div>
+
+<h3>The Core Equation</h3>
+
+<div class="equation-block">
+  <div class="equation-text">Accumulated Load &nbsp;&gt;&nbsp; Recovery Capacity &nbsp;=&nbsp; Depletion</div>
+</div>
+
+<p>Most interventions target the symptom side — they try to reduce the <em>feeling</em> of depletion through rest, distraction, or self-care. They do not address the <strong>load accumulation rate</strong> or the <strong>recovery capacity ceiling</strong>. This is why they fail.</p>
+
+<p><strong>Load accumulates from four primary sources:</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>Load Category</th>
+      <th>Primary Sources</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Cognitive Load</td><td>Sustained decision-making, problem-solving, high-stakes thinking</td></tr>
+    <tr><td>Emotional Load</td><td>Unprocessed feelings, interpersonal friction, suppressed conflict</td></tr>
+    <tr><td>Sensory Load</td><td>Digital stimulation, notifications, ambient information density</td></tr>
+    <tr><td>Relational Load</td><td>Social obligations, people-management, emotional performance</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>Most burned-out individuals are running high load across all four categories simultaneously — while operating in environments that provide zero structural support for reduction.</p>
+
+<h3>Why Vacation Doesn't Work</h3>
+
+<p>A 7-day vacation removes you from the environment but does not:</p>
+<ul>
+  <li>Reduce the cognitive residue of unresolved problems your brain continues processing</li>
+  <li>Restore damaged sleep architecture (the primary recovery mechanism)</li>
+  <li>Train the parasympathetic response to activate reliably</li>
+  <li>Change the structural conditions that produced the load in the first place</li>
+</ul>
+
+<p>You return to the same desk, the same inbox, the same meeting cadence. The nervous system recognizes the environment and re-enters threat mode within hours.</p>
+
+<h3>The Recovery Capacity Ceiling</h3>
+
+<p>Recovery capacity is not fixed. Chronic burnout actively degrades it:</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>Mechanism</th>
+      <th>How It Degrades Recovery</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>HPA Axis Dysregulation</td><td>Cortisol rhythms flatten, blunting the body's ability to self-regulate</td></tr>
+    <tr><td>Sleep Architecture Damage</td><td>Deep sleep — the primary recovery phase — decreases in duration and quality</td></tr>
+    <tr><td>Parasympathetic Suppression</td><td>The rest-and-digest response fails to activate reliably even during downtime</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout">
+  <div class="callout-label">Framework &mdash; The Burnout Load Model</div>
+  <p>Every experience produces <strong>Load</strong> or <strong>Recovery</strong> — it is never neutral. Map your day against these two categories. If your load inputs consistently exceed your recovery inputs across a rolling 7-day window, depletion is accumulating whether or not you feel it yet.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PART II — NERVOUS SYSTEM STATE AUDIT
+══════════════════════════════════════════════════════ -->
+<div class="section-divider">
+  <div class="divider-part">Part II</div>
+  <div class="divider-title">The Nervous System State Audit</div>
+  <div class="divider-subtitle">Mapping Your Depletion Pattern</div>
+  <div class="divider-line"></div>
+</div>
+
+<p>Before building a recovery protocol, you need an accurate map of where you currently are. Most people in burnout have lost the ability to accurately self-assess their state. The Nervous System State Audit corrects for this.</p>
+
+<h3>The Three Burnout Zones</h3>
+
+<div class="zone-grid">
+  <div class="zone-card z1">
+    <div class="zone-card-title">Zone 1 &mdash; Functional Stress (Score: 20–25)</div>
+    <p>Occasional exhaustion that resolves with one night of good sleep. Motivation fluctuates but returns after rest. Able to experience enjoyment, connection, and flow states. Recovery is naturally occurring.</p>
+  </div>
+
+  <div class="zone-card z2">
+    <div class="zone-card-title">Zone 2 &mdash; Chronic Depletion (Score: 13–19) &mdash; This Guide Targets Zone 2</div>
+    <p>Exhaustion that does not resolve with rest. Motivation absent for 3+ weeks. Inability to feel genuine enjoyment (anhedonia). Frequent irritability, emotional blunting, or numbness. Cognitive fog. Recovery requires deliberate intervention.</p>
+  </div>
+
+  <div class="zone-card z3">
+    <div class="zone-card-title">Zone 3 &mdash; Burnout Collapse (Score: 5–12)</div>
+    <p>Complete functional shutdown. Somatic symptoms: chronic pain, GI disruption, persistent illness. Dissociation from identity and purpose. Requires professional clinical support alongside this protocol.</p>
+  </div>
+</div>
+
+<h3>The Daily State Check-In (5 Questions)</h3>
+
+<p>Rate each from <strong>1</strong> (absent/very low) to <strong>5</strong> (strong/normal):</p>
+
+<ol>
+  <li><strong>Morning motivation</strong> — Did I wake with any natural willingness to engage with the day?</li>
+  <li><strong>Cognitive clarity</strong> — Can I think sequentially without significant effort?</li>
+  <li><strong>Emotional range</strong> — Am I accessing emotions other than flatness, irritability, or anxiety?</li>
+  <li><strong>Physical energy</strong> — Does my body feel capable of basic function without forcing it?</li>
+  <li><strong>Recovery signal</strong> — Did last night's sleep produce any measurable restoration?</li>
+</ol>
+
+<p>Use this audit daily for the first 30 days. It is your diagnostic instrument and your re-entry gate.</p>
+
+<h3>Mapping Your Depletion Architecture</h3>
+
+<p>Before building your recovery stack, map your specific load profile:</p>
+
+<div class="callout">
+  <div class="callout-label">Your Personal Load Map</div>
+  <p><strong>Cognitive Load:</strong> Which decisions consume the most mental energy? Which problems follow you home?</p>
+  <p><strong>Emotional Load:</strong> Which relationships require the most emotional management? Where are you performing emotional states you don't genuinely feel?</p>
+  <p><strong>Sensory Load:</strong> How many hours of screen time per day? How many daily notifications? When does silence occur?</p>
+  <p><strong>Relational Load:</strong> Which social obligations feel like performance rather than connection? Where are you managing others' emotions at the expense of your own regulation?</p>
+</div>
+
+<div class="pull-quote">
+  <span class="pq-label">Core Principle</span>
+  <p>&ldquo;You cannot recover from a system you have not diagnosed. The Nervous System State Audit is not optional — it is the foundation every other framework rests on.&rdquo;</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PART III — THE 4 RECOVERY INPUTS
+══════════════════════════════════════════════════════ -->
+<div class="section-divider">
+  <div class="divider-part">Part III</div>
+  <div class="divider-title">The 4 Recovery Inputs</div>
+  <div class="divider-subtitle">Your Complete Restoration Stack</div>
+  <div class="divider-line"></div>
+</div>
+
+<p>Recovery from burnout requires four specific inputs, in this order of priority. They are not interchangeable. Each addresses a different layer of the depletion architecture.</p>
+
+<h3>Recovery Input 1 &mdash; Sleep Architecture Restoration</h3>
+
+<p>Sleep is not a passive state. It is the primary mechanism through which the nervous system processes accumulated stress load and performs cellular repair. Burnout systematically degrades sleep architecture — specifically the slow-wave phases where the majority of physiological restoration occurs.</p>
+
+<p><strong>The Sleep Architecture Protocol:</strong></p>
+
+<div class="callout">
+  <div class="callout-label">4-Step Sleep Protocol</div>
+  <p><strong>Step 1 &mdash; Stabilize Timing First:</strong> Set a fixed wake time within 30 minutes, regardless of sleep quality. Consistency precedes duration.</p>
+  <p><strong>Step 2 &mdash; Reduce Evening Cortisol:</strong> Final 90 minutes before sleep — zero cognitively demanding inputs. No work, no emotionally activating content, no bright screens.</p>
+  <p><strong>Step 3 &mdash; Temperature Regulation:</strong> Cool bedroom (65–68°F / 18–20°C). Core temperature drops during sleep onset — support the drop.</p>
+  <p><strong>Step 4 &mdash; Morning Light Exposure:</strong> 10–20 minutes of outdoor light within the first hour of waking anchors circadian rhythm and enables reliable evening cortisol reduction.</p>
+</div>
+
+<h3>Recovery Input 2 &mdash; Sensory Reduction</h3>
+
+<p>Your nervous system is processing an unprecedented volume of sensory input at a rate that leaves no processing margin. Sensory reduction creates the low-stimulation windows in which the nervous system can self-regulate.</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>Intervention</th>
+      <th>What It Does</th>
+      <th>Implementation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Notification Consolidation</td><td>Eliminates random interruption spikes</td><td>Check notifications 3&times; daily, not continuously</td></tr>
+    <tr><td>Analog Morning Block</td><td>Creates low-stimulation window before digital activation</td><td>No phone for 60 min after waking</td></tr>
+    <tr><td>Input Curation</td><td>Reduces ambient cognitive load from information streams</td><td>Unsubscribe from 80% of content; curate deliberately</td></tr>
+    <tr><td>Silence Scheduling</td><td>Trains parasympathetic activation during daytime</td><td>20 min daily with no audio input</td></tr>
+    <tr><td>Screen Sunset</td><td>Reduces evening cortisol load</td><td>All screens off 90 min before bed</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p><strong>Important:</strong> Sensory reduction feels uncomfortable initially. A nervous system accustomed to high-stimulation environments experiences silence as threat. This discomfort is the signal that recovery is occurring — not that something is wrong.</p>
+
+<h3>Recovery Input 3 &mdash; Social Calibration</h3>
+
+<p>Not all social interaction depletes. Some restores. Social Calibration is the practice of deliberately restructuring your social environment to maximize restoration and minimize performed connection.</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>Restorative Contact</th>
+      <th>Depleting Contact</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Low-agenda interaction with people you feel safe being honest with</td>
+      <td>High-performance social situations requiring presentation of self</td>
+    </tr>
+    <tr>
+      <td>Shared activity with minimal verbal demand (walking, watching, building)</td>
+      <td>Relationships where you provide emotional labor without reciprocity</td>
+    </tr>
+    <tr>
+      <td>Connection that leaves you feeling <em>recognized</em>, not evaluated</td>
+      <td>Social obligations where you cannot be honest about your current state</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout">
+  <div class="callout-label">The Social Calibration Protocol</div>
+  <p>1. List every recurring social obligation &nbsp; 2. Rate each: Restorative (+) or Depleting (-) &nbsp; 3. In Weeks 1–2: cancel or postpone all Depleting contacts that can be rescheduled &nbsp; 4. In Weeks 3–4: reintroduce selectively, with a pre-agreed exit strategy &nbsp; 5. Protect Restorative contacts as recovery inputs, not optional luxuries</p>
+</div>
+
+<h3>Recovery Input 4 &mdash; Cognitive Offloading</h3>
+
+<p>The brain cannot restore itself while actively processing unresolved problems. Cognitive offloading is the systematic practice of externally capturing all open loops to free the prefrontal cortex for regulation rather than processing.</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>Practice</th>
+      <th>Frequency</th>
+      <th>What It Achieves</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Capture Protocol</td><td>Continuous (throughout day)</td><td>Clears working memory of open loops as they surface</td></tr>
+    <tr><td>Daily Closure</td><td>15 min, end of work day</td><td>Creates clean cognitive boundary between work and recovery</td></tr>
+    <tr><td>Weekly Unload</td><td>30 min, once per week</td><td>Processes longer-horizon concerns; nothing lives in background processing indefinitely</td></tr>
+    <tr><td>Worry Slot</td><td>10 min, scheduled daily</td><td>Consolidates anxiety processing; trains out-of-slot deferral</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="pull-quote">
+  <span class="pq-label">Stack Priority Rule</span>
+  <p>&ldquo;Do not implement all four Recovery Inputs simultaneously in Week 1. The sequence matters. Begin with Sleep Architecture. Add Sensory Reduction in Week 2. Add Social Calibration in Week 3. Embed Cognitive Offloading fully in Week 4. This sequencing respects the nervous system's recovery arc.&rdquo;</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PART IV — RE-ENTRY PROTOCOL
+══════════════════════════════════════════════════════ -->
+<div class="section-divider">
+  <div class="divider-part">Part IV</div>
+  <div class="divider-title">The Re-Entry Protocol</div>
+  <div class="divider-subtitle">Returning to Output Without Relapse</div>
+  <div class="divider-line"></div>
+</div>
+
+<p>The most common failure in burnout recovery is premature re-entry into full productivity. You feel 60% better and interpret that as 100% recovered. You restart at full capacity — and collapse again, often more severely than the first time.</p>
+
+<h3>The Three Phases of Re-Entry</h3>
+
+<h4>Phase 1 &mdash; Minimum Viable Output (Weeks 1–2)</h4>
+<p>Set output deliberately at <strong>40–50% of historical capacity</strong>. The energy not spent on output goes directly into recovery. Only commitments with actual consequences if missed. Hard stop at pre-defined work window. No output after 6PM.</p>
+
+<h4>Phase 2 &mdash; Graduated Return (Weeks 3–4)</h4>
+<p>Increase output in <strong>15% increments per week</strong>, gated by your State Audit score. Before increasing output, your daily average must be 18+ for five consecutive days. If not, hold at current output level.</p>
+
+<h4>Phase 3 &mdash; Sustainable Capacity (Week 5+)</h4>
+<p>Sustainable capacity is not your historical peak. It is the output level you can maintain indefinitely without accumulating net load. Typically <strong>70–80% of peak capacity</strong> — with structured recovery inputs built in as non-negotiables.</p>
+
+<h3>The Re-Entry Pacing Guide</h3>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>Week</th>
+      <th>Output Level</th>
+      <th>State Audit Gate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Week 1</td><td>40% of capacity</td><td>Daily check-in only</td></tr>
+    <tr><td>Week 2</td><td>50% of capacity</td><td>Average score 13+</td></tr>
+    <tr><td>Week 3</td><td>65% of capacity</td><td>Average score 16+</td></tr>
+    <tr><td>Week 4</td><td>75% of capacity</td><td>Average score 18+</td></tr>
+    <tr><td>Week 5+</td><td>Sustainable ceiling</td><td>Maintain 18+ average</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout">
+  <div class="callout-label">Non-Negotiables During Re-Entry</div>
+  <p>&bull; Sleep protocol maintained regardless of output demands</p>
+  <p>&bull; At least one full non-work day per week</p>
+  <p>&bull; All 4 Recovery Inputs maintained — they are not a phase, they are permanent architecture</p>
+  <p>&bull; State Audit tracked daily — any drop below 13 triggers a 48-hour output reduction</p>
+</div>
+
+<div class="pull-quote">
+  <span class="pq-label">The Re-Entry Test</span>
+  <p>&ldquo;Re-entry is not a reward for recovery. It is the test of whether the recovery was structural. If you can maintain your State Audit score while gradually increasing output, the architecture is working.&rdquo;</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PART V — ENVIRONMENT REDESIGN
+══════════════════════════════════════════════════════ -->
+<div class="section-divider">
+  <div class="divider-part">Part V</div>
+  <div class="divider-title">Environment Redesign</div>
+  <div class="divider-subtitle">Removing the Structural Sources of Load</div>
+  <div class="divider-line"></div>
+</div>
+
+<p>Burnout is not only internal. It requires an environment that sustains it. Remove the structural conditions and burnout cannot persist, even in individuals with high susceptibility.</p>
+
+<h3>Lever 1 &mdash; Physical Environment</h3>
+
+<p>Your physical workspace communicates safety or threat to your nervous system below the level of conscious awareness. Environments associated with unfinished tasks or high-performance demands activate sympathetic arousal automatically.</p>
+
+<ul>
+  <li>Create a physical transition ritual between work and non-work space</li>
+  <li>Remove work artifacts from sleep spaces entirely</li>
+  <li>Introduce deliberate sensory cues for recovery mode (lighting, temperature, sound)</li>
+  <li>Clear visual clutter — ambient disorder is processed as incomplete tasks</li>
+</ul>
+
+<h3>Lever 2 &mdash; Digital Environment</h3>
+
+<p>Your phone and computer are designed to maximize engagement — which means maximizing arousal. Structural modification is required.</p>
+
+<ul>
+  <li>Remove all work apps from your phone's home screen</li>
+  <li>Turn off all notification badges permanently (check on schedule)</li>
+  <li>Use separate browser profiles for work and personal browsing</li>
+  <li>Set Do Not Disturb as the default state; interruptions require a deliberate override</li>
+</ul>
+
+<h3>Lever 3 &mdash; Temporal Environment</h3>
+
+<p>The absence of structure around time is a primary burnout driver. When work has no defined end and recovery has no protected start, neither work nor rest is fully achieved.</p>
+
+<ul>
+  <li>Defined work start and <strong>hard stop times</strong></li>
+  <li>Blocked recovery periods that appear on your calendar</li>
+  <li>Explicit transition rituals (a walk, a shutdown routine, a physical location change)</li>
+  <li>Buffer time between high-load activities — no back-to-back demanding meetings</li>
+</ul>
+
+<h3>Lever 4 &mdash; Social Environment</h3>
+
+<p>The people and dynamics you return to daily are either net load or net restoration. Sustainable recovery requires modifying — not just enduring — depleting social structures where possible.</p>
+
+<h3>The Environmental Audit Worksheet</h3>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>Domain</th>
+      <th>Current Score (1–5)</th>
+      <th>Target (Week 4)</th>
+      <th>One Change This Week</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Physical workspace</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+    <tr><td>Digital environment</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+    <tr><td>Work time structure</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+    <tr><td>Social obligations</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+    <tr><td>Home environment</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout">
+  <div class="callout-label">Priority Rule</div>
+  <p>Address any domain scoring 1–2 before all others. These are active load generators that override all recovery inputs.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     30-DAY BURNOUT EXIT MAP
+══════════════════════════════════════════════════════ -->
+<div class="section-divider">
+  <div class="divider-part">Practical System</div>
+  <div class="divider-title">Your 30-Day Burnout Exit Map</div>
+  <div class="divider-subtitle">Weekly milestones, daily non-negotiables, and output gates</div>
+  <div class="divider-line"></div>
+</div>
+
+<!-- WEEK 1 -->
+<div class="week-block">
+  <div class="week-header">
+    <div class="week-title">Week 1 &mdash; Foundation</div>
+    <div class="week-focus">Minimum Input. Maximum Recovery.</div>
+  </div>
+  <div class="week-target">Output Target: 40% of Normal Capacity</div>
+  <p style="font-family:Arial,sans-serif;font-size:8pt;font-weight:bold;color:#0D1B2A;letter-spacing:1px;text-transform:uppercase;margin-bottom:3mm;">Daily Non-Negotiables</p>
+  <span class="checklist-item">Fixed wake time (within 30-minute window)</span>
+  <span class="checklist-item">Morning analog block (60 minutes, no phone)</span>
+  <span class="checklist-item">State Audit check-in (5-question score, logged)</span>
+  <span class="checklist-item">Cognitive capture session (end of day, 15 minutes)</span>
+  <span class="checklist-item">Hard work stop time honored</span>
+  <span class="checklist-item">Screen sunset (90 minutes before bed)</span>
+  <div class="milestone-label">Week 1 Milestone</div>
+  <div class="milestone-text">Consistent sleep timing established. State Audit scoring begun. Cognitive offload system active. Personal Load Map completed.</div>
+</div>
+
+<!-- WEEK 2 -->
+<div class="week-block">
+  <div class="week-header">
+    <div class="week-title">Week 2 &mdash; Reduction</div>
+    <div class="week-focus">Sensory and Social Load Reduction</div>
+  </div>
+  <div class="week-target">Output Target: 50% (only if State Audit average is 13+)</div>
+  <p style="font-family:Arial,sans-serif;font-size:8pt;font-weight:bold;color:#0D1B2A;letter-spacing:1px;text-transform:uppercase;margin-bottom:3mm;">Add to Week 1 Practices</p>
+  <span class="checklist-item">Notification consolidation implemented (3&times; daily check-in)</span>
+  <span class="checklist-item">Social obligation audit completed</span>
+  <span class="checklist-item">At least 2 depleting obligations cancelled or postponed</span>
+  <span class="checklist-item">20 minutes daily silence scheduled and protected</span>
+  <span class="checklist-item">Weekly Unload session completed (Sunday, 30 minutes)</span>
+  <div class="milestone-label">Week 2 Milestone</div>
+  <div class="milestone-text">Digital environment restructured. Social calendar recalibrated toward restoration. First measurable recovery in State Audit scores.</div>
+</div>
+
+<!-- WEEK 3 -->
+<div class="week-block">
+  <div class="week-header">
+    <div class="week-title">Week 3 &mdash; Stabilization</div>
+    <div class="week-focus">Environment Redesign &amp; Graduated Output</div>
+  </div>
+  <div class="week-target">Output Target: 65% (only if State Audit average is 16+)</div>
+  <p style="font-family:Arial,sans-serif;font-size:8pt;font-weight:bold;color:#0D1B2A;letter-spacing:1px;text-transform:uppercase;margin-bottom:3mm;">Add to Week 2 Practices</p>
+  <span class="checklist-item">Physical workspace modified (work artifacts removed from sleep spaces)</span>
+  <span class="checklist-item">Digital environment audit completed</span>
+  <span class="checklist-item">Work time structure formalized with hard stops</span>
+  <span class="checklist-item">Reintroduce one Restorative social contact per week</span>
+  <span class="checklist-item">Graduated output increase implemented (if scores are 16+)</span>
+  <div class="milestone-label">Week 3 Milestone</div>
+  <div class="milestone-text">Environmental load sources identified and reduced. Recovery curve showing consistent upward trend. Output increasing without State Audit drop.</div>
+</div>
+
+<!-- WEEK 4 -->
+<div class="week-block">
+  <div class="week-header">
+    <div class="week-title">Week 4 &mdash; Integration</div>
+    <div class="week-focus">System Lock-In &amp; Sustainable Architecture</div>
+  </div>
+  <div class="week-target">Output Target: 75% (only if State Audit average is 18+)</div>
+  <p style="font-family:Arial,sans-serif;font-size:8pt;font-weight:bold;color:#0D1B2A;letter-spacing:1px;text-transform:uppercase;margin-bottom:3mm;">Add to Week 3 Practices</p>
+  <span class="checklist-item">Full Cognitive Offloading system embedded as daily practice</span>
+  <span class="checklist-item">Weekly review of State Audit score trend</span>
+  <span class="checklist-item">Sustainable capacity ceiling identified (not historical peak)</span>
+  <span class="checklist-item">Re-Entry Protocol confirmed working (scores maintained with increased output)</span>
+  <span class="checklist-item">Environmental Redesign locked in as permanent structure</span>
+  <div class="milestone-label">Week 4 Milestone</div>
+  <div class="milestone-text">All 4 Recovery Inputs operating as non-negotiable architecture. Burnout exit confirmed by 5+ consecutive days of State Audit score 18+. Sustainable capacity baseline established.</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TOOLS & WORKSHEETS
+══════════════════════════════════════════════════════ -->
+<div class="section-divider">
+  <div class="divider-part">Practical System</div>
+  <div class="divider-title">Tools &amp; Worksheets</div>
+  <div class="divider-subtitle">Your complete implementation kit</div>
+  <div class="divider-line"></div>
+</div>
+
+<!-- Tool 1 -->
+<div class="tool-block">
+  <div class="tool-header">
+    <div class="tool-header-num">Tool 01</div>
+    <div class="tool-header-title">Daily State Check-In Tracker</div>
+  </div>
+  <div class="tool-body">
+    <div class="tracker-row">
+      <div class="tracker-label">Date / Week</div>
+      <div class="tool-field" style="width:60mm;">&nbsp;</div>
+    </div>
+    <div class="tracker-row">
+      <div class="tracker-label">Morning Motivation</div>
+      <div class="tracker-boxes">
+        <div class="tracker-box">1</div>
+        <div class="tracker-box">2</div>
+        <div class="tracker-box">3</div>
+        <div class="tracker-box">4</div>
+        <div class="tracker-box">5</div>
+      </div>
+    </div>
+    <div class="tracker-row">
+      <div class="tracker-label">Cognitive Clarity</div>
+      <div class="tracker-boxes">
+        <div class="tracker-box">1</div>
+        <div class="tracker-box">2</div>
+        <div class="tracker-box">3</div>
+        <div class="tracker-box">4</div>
+        <div class="tracker-box">5</div>
+      </div>
+    </div>
+    <div class="tracker-row">
+      <div class="tracker-label">Emotional Range</div>
+      <div class="tracker-boxes">
+        <div class="tracker-box">1</div>
+        <div class="tracker-box">2</div>
+        <div class="tracker-box">3</div>
+        <div class="tracker-box">4</div>
+        <div class="tracker-box">5</div>
+      </div>
+    </div>
+    <div class="tracker-row">
+      <div class="tracker-label">Physical Energy</div>
+      <div class="tracker-boxes">
+        <div class="tracker-box">1</div>
+        <div class="tracker-box">2</div>
+        <div class="tracker-box">3</div>
+        <div class="tracker-box">4</div>
+        <div class="tracker-box">5</div>
+      </div>
+    </div>
+    <div class="tracker-row">
+      <div class="tracker-label">Recovery Signal</div>
+      <div class="tracker-boxes">
+        <div class="tracker-box">1</div>
+        <div class="tracker-box">2</div>
+        <div class="tracker-box">3</div>
+        <div class="tracker-box">4</div>
+        <div class="tracker-box">5</div>
+      </div>
+    </div>
+    <div class="tracker-row" style="margin-top:2mm;border-top:2px solid #C9A84C;border-bottom:none;padding-top:3mm;">
+      <div class="tracker-label"><strong>Daily Total &nbsp;/25 &nbsp;&nbsp; 7-Day Average &nbsp;/25 &nbsp;&nbsp; Zone: □ 1 &nbsp; □ 2 &nbsp; □ 3</strong></div>
+    </div>
+    <div class="tool-field-label">Primary load source today</div>
+    <div class="tool-field">&nbsp;</div>
+    <div class="tool-field-label">One recovery input completed</div>
+    <div class="tool-field">&nbsp;</div>
+  </div>
+</div>
+
+<!-- Tool 2 -->
+<div class="tool-block">
+  <div class="tool-header">
+    <div class="tool-header-num">Tool 02</div>
+    <div class="tool-header-title">Daily Load Reduction Checklist</div>
+  </div>
+  <div class="tool-body">
+    <p style="font-family:Arial,sans-serif;font-size:7.5pt;font-weight:bold;color:#2A7B8C;text-transform:uppercase;letter-spacing:1px;margin-bottom:2mm;">Morning (Before Work)</p>
+    <span class="checklist-item">Fixed wake time honored</span>
+    <span class="checklist-item">60-minute analog block (no phone)</span>
+    <span class="checklist-item">Morning light exposure (10+ minutes outdoors)</span>
+    <span class="checklist-item">State Audit completed and logged</span>
+    <p style="font-family:Arial,sans-serif;font-size:7.5pt;font-weight:bold;color:#2A7B8C;text-transform:uppercase;letter-spacing:1px;margin:4mm 0 2mm;">During Work</p>
+    <span class="checklist-item">Notifications on schedule-check only</span>
+    <span class="checklist-item">Hard-stop time set before starting</span>
+    <span class="checklist-item">Cognitive captures logged (not held in memory)</span>
+    <span class="checklist-item">Buffer time between high-demand tasks</span>
+    <p style="font-family:Arial,sans-serif;font-size:7.5pt;font-weight:bold;color:#2A7B8C;text-transform:uppercase;letter-spacing:1px;margin:4mm 0 2mm;">Evening (After Work Stop)</p>
+    <span class="checklist-item">15-minute end-of-day capture + closure session</span>
+    <span class="checklist-item">Physical transition from work space</span>
+    <span class="checklist-item">No new work inputs after stop time</span>
+    <span class="checklist-item">Screen sunset at 90 minutes before bed</span>
+    <span class="checklist-item">20-minute silence window</span>
+  </div>
+</div>
+
+<!-- Tool 3 -->
+<div class="tool-block">
+  <div class="tool-header">
+    <div class="tool-header-num">Tool 03</div>
+    <div class="tool-header-title">Personal Load Map</div>
+  </div>
+  <div class="tool-body">
+    <table class="tool-table">
+      <thead>
+        <tr>
+          <th>Load Source</th>
+          <th>Category</th>
+          <th>Daily Duration</th>
+          <th>Severity (1–5)</th>
+          <th>Reducible?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="writeable">&nbsp;</td><td>Cognitive</td><td class="writeable">&nbsp;</td><td class="writeable">&nbsp;</td><td class="writeable">&nbsp;</td></tr>
+        <tr><td class="writeable">&nbsp;</td><td>Cognitive</td><td class="writeable">&nbsp;</td><td class="writeable">&nbsp;</td><td class="writeable">&nbsp;</td></tr>
+        <tr><td class="writeable">&nbsp;</td><td>Emotional</td><td class="writeable">&nbsp;</td><td class="writeable">&nbsp;</td><td class="writeable">&nbsp;</td></tr>
+        <tr><td class="writeable">&nbsp;</td><td>Emotional</td><td class="writeable">&nbsp;</td><td class="writeable">&nbsp;</td><td class="writeable">&nbsp;</td></tr>
+        <tr><td class="writeable">&nbsp;</td><td>Sensory</td><td class="writeable">&nbsp;</td><td class="writeable">&nbsp;</td><td class="writeable">&nbsp;</td></tr>
+        <tr><td class="writeable">&nbsp;</td><td>Relational</td><td class="writeable">&nbsp;</td><td class="writeable">&nbsp;</td><td class="writeable">&nbsp;</td></tr>
+        <tr><td class="writeable">&nbsp;</td><td>Relational</td><td class="writeable">&nbsp;</td><td class="writeable">&nbsp;</td><td class="writeable">&nbsp;</td></tr>
+      </tbody>
+    </table>
+    <div class="tool-field-label">Top priority load source to eliminate first</div>
+    <div class="tool-field">&nbsp;</div>
+    <div class="tool-field-label">Structural change possible</div>
+    <div class="tool-field">&nbsp;</div>
+  </div>
+</div>
+
+<!-- Tool 4 -->
+<div class="tool-block">
+  <div class="tool-header">
+    <div class="tool-header-num">Tool 04</div>
+    <div class="tool-header-title">Re-Entry Pacing Tracker</div>
+  </div>
+  <div class="tool-body">
+    <div class="tracker-row">
+      <div class="tracker-label">Current Week</div>
+      <div class="tool-field" style="width:30mm;">&nbsp;</div>
+    </div>
+    <div class="tracker-row">
+      <div class="tracker-label">Current Output Level (%)</div>
+      <div class="tool-field" style="width:30mm;">&nbsp;</div>
+    </div>
+    <div class="tracker-row">
+      <div class="tracker-label">State Audit 7-Day Average</div>
+      <div class="tool-field" style="width:30mm;">&nbsp;</div>
+    </div>
+    <div class="tracker-row">
+      <div class="tracker-label">Gate Requirement for Next Level</div>
+      <div class="tool-field" style="width:30mm;">&nbsp;</div>
+    </div>
+    <div class="tracker-row" style="margin-top:3mm;">
+      <div class="tracker-label"><strong>Ready to increase?</strong> &nbsp; □ Yes &nbsp;&nbsp; □ No — Hold at current level</div>
+    </div>
+    <div class="tool-field-label">Reason for hold (if applicable)</div>
+    <div class="tool-field">&nbsp;</div>
+    <div class="tool-field-label">Next check-in date</div>
+    <div class="tool-field">&nbsp;</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SUMMARY
+══════════════════════════════════════════════════════ -->
+<div class="section-divider">
+  <div class="divider-part">Summary</div>
+  <div class="divider-title">The Burnout Architecture at a Glance</div>
+  <div class="divider-subtitle">Everything you now have that you didn't before</div>
+  <div class="divider-line"></div>
+</div>
+
+<h3>The Core Insight</h3>
+
+<p>Burnout is a systems failure, not a personal failure. It is what happens when accumulated load chronically exceeds recovery capacity — in an environment that provides no structural support for reduction. Rest alone does not fix it. Structure does.</p>
+
+<h3>The Five-Part Architecture</h3>
+
+<div class="summary-grid">
+  <div class="summary-row">
+    <div class="summary-num">1</div>
+    <div class="summary-content">
+      <div class="summary-title">The Burnout Load Model</div>
+      <div class="summary-body">Explains why current strategies fail. Every experience is Load or Recovery — never neutral. Primary tool: Load vs. Recovery Mapping.</div>
+    </div>
+  </div>
+  <div class="summary-row">
+    <div class="summary-num">2</div>
+    <div class="summary-content">
+      <div class="summary-title">The Nervous System State Audit</div>
+      <div class="summary-body">Diagnoses your exact depletion pattern across 5 dimensions. Primary tool: Daily 5-Question Check-In.</div>
+    </div>
+  </div>
+  <div class="summary-row">
+    <div class="summary-num">3</div>
+    <div class="summary-content">
+      <div class="summary-title">The 4 Recovery Inputs</div>
+      <div class="summary-body">Restores nervous system function structurally through Sleep Architecture, Sensory Reduction, Social Calibration, and Cognitive Offloading.</div>
+    </div>
+  </div>
+  <div class="summary-row">
+    <div class="summary-num">4</div>
+    <div class="summary-content">
+      <div class="summary-title">The Re-Entry Protocol</div>
+      <div class="summary-body">Returns you to output without relapse through gated, paced output expansion tied to State Audit scores.</div>
+    </div>
+  </div>
+  <div class="summary-row">
+    <div class="summary-num">5</div>
+    <div class="summary-content">
+      <div class="summary-title">Environment Redesign</div>
+      <div class="summary-body">Removes the structural conditions burnout requires through 4 environmental levers: Physical, Digital, Temporal, Social.</div>
+    </div>
+  </div>
+</div>
+
+<div class="pull-quote">
+  <span class="pq-label">The Permanent Anti-Burnout Stack</span>
+  <p>&ldquo;Sleep Protocol maintained as a non-negotiable &bull; Sensory structure in place &bull; Social calibration ongoing &bull; Cognitive offloading as daily practice &bull; Weekly State Audit monitoring to catch drift before it becomes collapse. This is not a recovery program. This is how you operate permanently.&rdquo;</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     CLOSING PAGE
+══════════════════════════════════════════════════════ -->
+<div class="closing-page">
+  <div class="closing-trilogy">
+    <div class="trilogy-item">
+      <div class="trilogy-item-title">Dopamine Architecture</div>
+      <div class="trilogy-item-sub">Reward Systems &bull; Motivation</div>
+    </div>
+    <div class="trilogy-item">
+      <div class="trilogy-item-title">Discipline Architecture</div>
+      <div class="trilogy-item-sub">Execution Systems &bull; Consistency</div>
+    </div>
+    <div class="trilogy-item active">
+      <div class="trilogy-item-title">Burnout Architecture</div>
+      <div class="trilogy-item-sub">Recovery Systems &bull; Foundation</div>
+    </div>
+  </div>
+
+  <div class="title-ornament"></div>
+  <div class="closing-title">Start With the State Audit.<br>Build From There.</div>
+  <div class="closing-sub">The architecture is now yours. The first step is diagnosis.</div>
+
+  <div class="closing-cta">
+    <div class="closing-cta-text">lazyscholarph.com</div>
+  </div>
+
+  <div class="closing-brand">Lazy Scholar PH &nbsp;&bull;&nbsp; Systems Thinking for Ambitious, Exhausted People</div>
+  <div class="closing-copyright">
+    &copy; 2026 Lazy Scholar PH. All rights reserved.<br>
+    This document is licensed for personal use only. For institutional licensing: hello@lazyscholarph.com
+  </div>
+</div>
+
+</body>
+</html>

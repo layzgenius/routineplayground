@@ -1,4 +1,4 @@
-Status: READY_FOR_WRITING
+Status: COMPLETED
 
 Title: The Burnout Architecture: A Systems Map for Nervous System Recovery
 
