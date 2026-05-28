@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Status Mechanics — Lazy Scholar PH</title>
+<style>
+  /* ===== FONTS & RESET ===== */
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ===== DESIGN TOKENS ===== */
+  :root {
+    --ink:       #0E0E0E;
+    --ink-soft:  #3A3A3A;
+    --ink-muted: #6B6B6B;
+    --paper:     #FAFAF8;
+    --cream:     #F5F4EF;
+    --gold:      #C9A84C;
+    --gold-lt:   #E8D08C;
+    --gold-dk:   #8B6914;
+    --accent:    #1A1A2E;
+    --rule:      #D4C9A8;
+    --serif:     'Playfair Display', Georgia, serif;
+    --sans:      'Inter', -apple-system, sans-serif;
+    --page-w:    680px;
+    --gutter:    56px;
+  }
+
+  /* ===== BASE ===== */
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== PAGE WRAPPER ===== */
+  .page {
+    max-width: var(--page-w);
+    margin: 0 auto;
+    background: var(--paper);
+    box-shadow: 0 4px 40px rgba(0,0,0,0.10);
+  }
+
+  /* ===== COVER ===== */
+  .cover {
+    background: var(--accent);
+    color: #fff;
+    padding: 90px var(--gutter) 80px;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -120px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.18) 0%, transparent 70%);
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -80px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+  }
+  .brand-line {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 52px;
+  }
+  .cover-rule {
+    width: 48px;
+    height: 2px;
+    background: var(--gold);
+    margin-bottom: 32px;
+  }
+  .cover h1 {
+    font-family: var(--serif);
+    font-size: 52px;
+    font-weight: 900;
+    line-height: 1.08;
+    letter-spacing: -1px;
+    color: #fff;
+    margin-bottom: 24px;
+  }
+  .cover-sub {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 400;
+    font-style: italic;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.4;
+    max-width: 480px;
+    margin-bottom: 60px;
+  }
+  .cover-meta {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+  .cover-badge {
+    background: var(--gold);
+    color: var(--accent);
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 2px;
+  }
+  .cover-edition {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 1px;
+  }
+
+  /* ===== CONTENT WRAPPER ===== */
+  .content {
+    padding: 64px var(--gutter);
+  }
+
+  /* ===== PULL QUOTE / EPIGRAPH ===== */
+  .epigraph {
+    border-left: 3px solid var(--gold);
+    padding: 20px 28px;
+    margin: 0 0 56px;
+    background: var(--cream);
+  }
+  .epigraph p {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-style: italic;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  /* ===== TABLE OF CONTENTS ===== */
+  .toc-section {
+    margin-bottom: 64px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .toc-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+  }
+  .toc-list {
+    list-style: none;
+    counter-reset: toc;
+  }
+  .toc-list li {
+    counter-increment: toc;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(212,201,168,0.4);
+    font-size: 13.5px;
+    color: var(--ink-soft);
+  }
+  .toc-list li::before {
+    content: counter(toc, decimal-leading-zero);
+    font-family: var(--serif);
+    font-size: 11px;
+    color: var(--gold);
+    font-weight: 700;
+    min-width: 24px;
+  }
+  .toc-list li:last-child { border-bottom: none; }
+  .toc-title { flex: 1; font-weight: 500; }
+  .toc-dots {
+    flex: 1;
+    border-bottom: 1px dotted var(--rule);
+    margin: 0 8px 4px;
+  }
+
+  /* ===== SECTION DIVIDER ===== */
+  .section-divider {
+    background: var(--accent);
+    margin: 64px calc(-1 * var(--gutter));
+    padding: 36px var(--gutter);
+    page-break-before: always;
+  }
+  .section-num {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .section-divider h2 {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+  .section-divider .section-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    font-style: italic;
+  }
+
+  /* ===== HEADINGS ===== */
+  h3 {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 40px 0 16px;
+    line-height: 1.3;
+  }
+  h4 {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold-dk);
+    margin: 32px 0 12px;
+  }
+
+  /* ===== BODY TEXT ===== */
+  p {
+    margin-bottom: 18px;
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  /* ===== PULL QUOTE ===== */
+  .pull-quote {
+    margin: 36px 0;
+    padding: 28px 32px;
+    border-top: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+    background: var(--cream);
+  }
+  .pull-quote p {
+    font-family: var(--serif);
+    font-size: 19px;
+    font-style: italic;
+    color: var(--accent);
+    line-height: 1.55;
+    margin: 0;
+    text-align: center;
+  }
+
+  /* ===== CALLOUT BOX ===== */
+  .callout {
+    background: var(--accent);
+    color: #fff;
+    padding: 24px 28px;
+    margin: 32px 0;
+    border-radius: 2px;
+  }
+  .callout-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .callout p {
+    color: rgba(255,255,255,0.88);
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.7;
+  }
+
+  .callout-light {
+    background: #FFF9EC;
+    border-left: 3px solid var(--gold);
+    padding: 20px 24px;
+    margin: 28px 0;
+  }
+  .callout-light p {
+    color: var(--ink-soft);
+    margin: 0;
+    font-size: 14px;
+  }
+
+  /* ===== COMPARISON TABLE ===== */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 28px 0;
+    font-size: 13.5px;
+  }
+  .compare-table thead th {
+    background: var(--accent);
+    color: #fff;
+    padding: 12px 16px;
+    text-align: left;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .compare-table thead th:first-child {
+    background: var(--gold-dk);
+  }
+  .compare-table tbody tr:nth-child(even) { background: var(--cream); }
+  .compare-table tbody tr:nth-child(odd)  { background: var(--paper); }
+  .compare-table tbody td {
+    padding: 11px 16px;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .compare-table tbody td:first-child {
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 13px;
+  }
+  .compare-table .low-col  { color: #8B2020; }
+  .compare-table .high-col { color: #1A5C1A; }
+
+  /* ===== CHECKLIST ===== */
+  .checklist {
+    list-style: none;
+    margin: 16px 0 28px;
+  }
+  .checklist li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(212,201,168,0.35);
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before {
+    content: '☐';
+    color: var(--gold);
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ===== NUMBERED LIST ===== */
+  .numbered {
+    counter-reset: item;
+    list-style: none;
+    margin: 16px 0 28px;
+  }
+  .numbered li {
+    counter-increment: item;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    line-height: 1.65;
+  }
+  .numbered li::before {
+    content: counter(item);
+    background: var(--gold);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 11px;
+    min-width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  /* ===== BULLET LIST ===== */
+  ul.bullets {
+    list-style: none;
+    margin: 12px 0 24px;
+  }
+  ul.bullets li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  ul.bullets li::before {
+    content: '—';
+    color: var(--gold);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ===== SCORE CARD ===== */
+  .score-card {
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 28px 0;
+  }
+  .score-card-header {
+    background: var(--gold);
+    padding: 12px 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--rule);
+    font-size: 13.5px;
+  }
+  .score-row:last-child { border-bottom: none; }
+  .score-range { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .score-label { color: var(--ink-soft); }
+  .score-indicator {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .si-green  { background: #2E7D32; }
+  .si-lime   { background: #7CB342; }
+  .si-yellow { background: #F9A825; }
+  .si-orange { background: #E65100; }
+  .si-red    { background: #B71C1C; }
+
+  /* ===== DEFAULT BLOCKS (The 12) ===== */
+  .default-block {
+    border-left: 3px solid var(--gold);
+    padding: 16px 20px;
+    margin: 24px 0;
+    background: var(--cream);
+  }
+  .default-num {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold-dk);
+    margin-bottom: 6px;
+  }
+  .default-title {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .default-block p {
+    font-size: 13.5px;
+    margin: 0;
+    color: var(--ink-soft);
+  }
+
+  /* ===== AUDIT DOMAIN ===== */
+  .audit-domain {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    margin: 28px 0;
+    overflow: hidden;
+  }
+  .audit-header {
+    background: var(--accent);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .audit-domain-num {
+    background: var(--gold);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 12px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .audit-header h4 {
+    color: #fff;
+    font-size: 13px;
+    letter-spacing: 2px;
+    margin: 0;
+  }
+  .audit-body {
+    padding: 16px 20px;
+  }
+  .audit-body .checklist li { font-size: 13px; }
+  .audit-score-line {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--rule);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold-dk);
+  }
+
+  /* ===== PRINCIPLE BLOCKS ===== */
+  .principle {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin: 32px 0;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .principle:last-of-type { border-bottom: none; }
+  .principle-num {
+    font-family: var(--serif);
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--rule);
+    line-height: 1;
+    flex-shrink: 0;
+    min-width: 48px;
+    text-align: center;
+    margin-top: -4px;
+  }
+  .principle-content h4 {
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+  .principle-content p { margin: 0; font-size: 14px; }
+
+  /* ===== WEEK BLOCK ===== */
+  .week-block {
+    margin: 32px 0;
+    padding: 28px;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    position: relative;
+  }
+  .week-tag {
+    position: absolute;
+    top: -12px; left: 24px;
+    background: var(--gold);
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 2px;
+  }
+  .week-block h3 { margin-top: 8px; }
+  .week-block h4 { margin-top: 16px; }
+
+  /* ===== CLOSING ===== */
+  .closing {
+    background: var(--accent);
+    margin: 64px calc(-1 * var(--gutter)) 0;
+    padding: 64px var(--gutter);
+    color: #fff;
+    page-break-before: always;
+  }
+  .closing-rule {
+    width: 48px;
+    height: 2px;
+    background: var(--gold);
+    margin-bottom: 32px;
+  }
+  .closing h2 {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    line-height: 1.25;
+  }
+  .closing p {
+    color: rgba(255,255,255,0.78);
+    font-size: 15px;
+    line-height: 1.8;
+    max-width: 520px;
+  }
+  .closing-actions {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+  }
+  .action-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .action-step {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.85);
+  }
+  .step-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+  .closing-brand {
+    margin-top: 56px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .closing-brand .brand { font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--gold); }
+  .closing-brand .copy  { font-size: 11px; color: rgba(255,255,255,0.35); }
+
+  /* ===== PRINT / PDF ===== */
+  @media print {
+    body { background: white; }
+    .page { box-shadow: none; }
+    .section-divider { page-break-before: always; }
+    .cover { page-break-after: always; }
+    .closing { page-break-before: always; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ===== COVER PAGE ===== -->
+  <div class="cover">
+    <div class="brand-line">Lazy Scholar PH &nbsp;·&nbsp; Premium Digital Resource</div>
+    <div class="cover-rule"></div>
+    <h1>Status<br>Mechanics</h1>
+    <p class="cover-sub">The Hidden Scoring System Running Every Social Interaction</p>
+    <div class="cover-meta">
+      <span class="cover-badge">Complete Guide</span>
+      <span class="cover-edition">Includes 6-Domain Audit &amp; 30-Day Protocol</span>
+    </div>
+  </div>
+
+  <!-- ===== CONTENT ===== -->
+  <div class="content">
+
+    <!-- Epigraph -->
+    <div class="epigraph">
+      <p>"Status is not assigned. It is calculated — in real time, by every person in the room, without their conscious awareness or yours."</p>
+    </div>
+
+    <!-- TOC -->
+    <div class="toc-section">
+      <div class="toc-label">Table of Contents</div>
+      <ol class="toc-list">
+        <li><span class="toc-title">Introduction: The Game You're Already Playing</span></li>
+        <li><span class="toc-title">The Two-Hierarchy Model: Dominance vs. Prestige</span></li>
+        <li><span class="toc-title">The Status Signal Stack: What Is Actually Being Read</span></li>
+        <li><span class="toc-title">Behavioral Scoring Patterns: Real-Time Calculations</span></li>
+        <li><span class="toc-title">The 12 High-Status Behavioral Defaults</span></li>
+        <li><span class="toc-title">Status Threats and Recovery</span></li>
+        <li><span class="toc-title">Environmental Status Calibration</span></li>
+        <li><span class="toc-title">The Status Audit: Six-Domain Self-Assessment</span></li>
+        <li><span class="toc-title">The 30-Day Prestige Protocol</span></li>
+        <li><span class="toc-title">Summary: The Complete Status Map</span></li>
+      </ol>
+    </div>
+
+    <!-- INTRO -->
+    <div class="section-divider">
+      <div class="section-num">Introduction</div>
+      <h2>The Game You're Already Playing</h2>
+      <div class="section-sub">Why status operates beneath the level of conscious awareness — and why that matters</div>
+    </div>
+
+    <p>You have been scored in every conversation you have had today.</p>
+    <p>Not by a conscious evaluator with a clipboard — but by the pattern-recognition circuitry that every human brain runs automatically, beneath the level of language, before a single word has been exchanged. Status is assessed in the first 300 milliseconds of an interaction. It is updated continuously as the interaction unfolds. And it determines, more than any other single factor, whether you will be listened to, trusted, advanced, or overlooked.</p>
+    <p>The frustrating reality is that most people experience the <em>consequences</em> of status dynamics without ever understanding the mechanism. They sense that something invisible is being tracked. They notice that certain people command rooms effortlessly while others struggle despite technical competence. They feel the shift when an interaction goes poorly — but cannot name what caused it.</p>
+
+    <div class="pull-quote">
+      <p>"The scoring system is already running.<br>This document gives you the rulebook."</p>
+    </div>
+
+    <p>What follows is a complete architectural map of how status is assessed, maintained, compounded, and destroyed in modern professional and social environments. This is not motivational content. It is a technical manual — built on behavioral science, evolutionary psychology, and pattern recognition — designed to give you conscious access to a system that has always been running in the background.</p>
+    <p>The goal is not to make you manipulative. It is to make you literate.</p>
+
+    <!-- SECTION 1 -->
+    <div class="section-divider">
+      <div class="section-num">Section One</div>
+      <h2>The Two-Hierarchy Model:<br>Dominance vs. Prestige</h2>
+      <div class="section-sub">Why most people are playing the wrong game</div>
+    </div>
+
+    <p>Every human group organizes itself along two fundamentally different status hierarchies. Most people operate as if there is only one. This mistake costs them everything.</p>
+
+    <h3>Hierarchy Type 1: Dominance</h3>
+    <p>Dominance hierarchies are ancient. They predate complex language. They operate on a single currency: <strong>the credible threat of cost imposition</strong>.</p>
+    <p>A dominance-based high-status individual maintains their position by controlling resources, punishing non-compliance, and generating compliance through fear or social pressure.</p>
+
+    <h4>How Dominance Status Is Maintained</h4>
+    <ul class="bullets">
+      <li>Controlling who speaks and when</li>
+      <li>Withholding approval or recognition as a power tool</li>
+      <li>Exploiting social friction to establish hierarchy</li>
+      <li>Punishing challenges publicly and disproportionately</li>
+      <li>Monopolizing attention without reciprocation</li>
+    </ul>
+
+    <div class="callout-light">
+      <p><strong>The structural problem:</strong> Dominance generates <em>compliance</em> — not respect. The moment coercive leverage is reduced, dominance status collapses instantly. It is expensive to maintain, creates adversaries, and produces brittle social architectures.</p>
+    </div>
+
+    <h3>Hierarchy Type 2: Prestige</h3>
+    <p>Prestige hierarchies are uniquely human. They require sophisticated social cognition and extended time horizons. A prestige-based individual maintains their position by demonstrating competence, generating value, and providing reliable signals of trustworthiness. Others defer to them voluntarily — not because they fear consequences but because they genuinely benefit from the association.</p>
+
+    <h4>How Prestige Status Is Maintained</h4>
+    <ul class="bullets">
+      <li>Consistent delivery on stated positions</li>
+      <li>Genuine investment in others' outcomes</li>
+      <li>Demonstrated competence without insecurity-driven display</li>
+      <li>Comfort with complexity and uncertainty</li>
+      <li>Selective use of social capital</li>
+    </ul>
+
+    <div class="callout">
+      <div class="callout-label">Critical Insight</div>
+      <p>Most people who are trying to "be more confident" or "project more authority" are unconsciously deploying dominance signals — generating short-term compliance while eroding long-term respect.</p>
+    </div>
+
+    <h4>Behavioral Fingerprints: Dominance vs. Prestige</h4>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Situation</th>
+          <th class="low-col">Dominance Response</th>
+          <th class="high-col">Prestige Response</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Being challenged</td><td class="low-col">Escalates, punishes</td><td class="high-col">Engages with curiosity</td></tr>
+        <tr><td>In disagreement</td><td class="low-col">Talks over, dismisses</td><td class="high-col">Asks clarifying questions</td></tr>
+        <tr><td>When uncertain</td><td class="low-col">Performs certainty</td><td class="high-col">Acknowledges, investigates</td></tr>
+        <tr><td>With attention</td><td class="low-col">Monopolizes</td><td class="high-col">Distributes strategically</td></tr>
+        <tr><td>Under pressure</td><td class="low-col">Reactive, defensive</td><td class="high-col">Measured, deliberate</td></tr>
+        <tr><td>With success</td><td class="low-col">Claims credit</td><td class="high-col">Attributes to team</td></tr>
+        <tr><td>With failure</td><td class="low-col">Deflects blame</td><td class="high-col">Owns cleanly</td></tr>
+      </tbody>
+    </table>
+
+    <!-- SECTION 2 -->
+    <div class="section-divider">
+      <div class="section-num">Section Two</div>
+      <h2>The Status Signal Stack</h2>
+      <div class="section-sub">What is actually being read in every interaction</div>
+    </div>
+
+    <p>Status is not assessed on a single dimension. It is calculated across a layered stack of signals, processed simultaneously by the evaluator's nervous system. Understanding this stack is the difference between guessing and knowing.</p>
+
+    <h3>Layer 1: Somatic Signals <span style="font-size:13px;font-weight:400;color:var(--gold-dk)">(Pre-Verbal — Highest Weight)</span></h3>
+    <p>These signals are processed before language and are the hardest to fake.</p>
+    <ul class="bullets">
+      <li><strong>Movement economy:</strong> High-status individuals move with deliberate efficiency. Low-status individuals display nervous excess movement — fidgeting, over-gesturing, self-touching.</li>
+      <li><strong>Spatial occupation:</strong> Status correlates with comfortable occupation of available space. Physical contraction signals submission.</li>
+      <li><strong>Vocal pace:</strong> Dominant voices are slower. Rushed speech reads as anxiety — anxiety reads as low status.</li>
+      <li><strong>Eye contact calibration:</strong> Relaxed, held contact during key statements. Breaking eye contact downward signals submission; breaking sideways signals confidence.</li>
+      <li><strong>Reaction latency:</strong> Immediate capitulation = low status. Deliberate pause before response = high status.</li>
+    </ul>
+
+    <h3>Layer 2: Attentional Signals</h3>
+    <p>Your attention is a currency. How you spend it broadcasts your status calculation of every person in the room.</p>
+
+    <table class="compare-table">
+      <thead><tr><th>Pattern Type</th><th>Behavior</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>High-Status</td><td>Directs attention by genuine engagement</td><td class="high-col">Selective = valuable</td></tr>
+        <tr><td>High-Status</td><td>Doesn't laugh before the punchline</td><td class="high-col">Authentic response</td></tr>
+        <tr><td>Low-Status</td><td>Over-nodding, reflexive agreement</td><td class="low-col">Approval-seeking</td></tr>
+        <tr><td>Low-Status</td><td>Seeks eye contact from high-status others</td><td class="low-col">Upward-looking orientation</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Layer 3: Linguistic Signals</h3>
+
+    <h4>High-Status Linguistic Patterns</h4>
+    <ul class="bullets">
+      <li><strong>Declarative over interrogative:</strong> "We should do X" vs. "I was thinking maybe we could do X?"</li>
+      <li><strong>No pre-emptive apology:</strong> "This might be wrong, but..." signals insecurity before the idea is evaluated</li>
+      <li><strong>Economy of words:</strong> Low-status speakers over-explain. High-status speakers state and allow silence to work.</li>
+      <li><strong>First-person ownership:</strong> "I decided" vs. "The decision was made"</li>
+    </ul>
+
+    <h4>Common High-Cost Linguistic Errors</h4>
+    <ol class="numbered">
+      <li>Upspeak — rising inflection on declarative statements converts them into approval requests</li>
+      <li>Filler over-use — signals real-time insecurity ("um, like, you know...")</li>
+      <li>Excessive hedging — "kind of", "sort of", "maybe" erodes perceived conviction</li>
+      <li>Permission-seeking preambles — "I just wanted to say..." / "This is probably dumb but..."</li>
+    </ol>
+
+    <h3>Layer 4: Social Friction Response <span style="font-size:13px;font-weight:400;color:var(--gold-dk)">(Highest Diagnostic Value)</span></h3>
+
+    <div class="pull-quote">
+      <p>"The status is revealed in the response,<br>not the provocation."</p>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr><th>Friction Event</th><th class="low-col">Low-Status Response</th><th class="high-col">High-Status Response</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Interrupted mid-sentence</td><td class="low-col">Stops, defers</td><td class="high-col">Continues without acknowledging</td></tr>
+        <tr><td>Opinion challenged</td><td class="low-col">Backs down rapidly</td><td class="high-col">"Walk me through your thinking"</td></tr>
+        <tr><td>Work criticized</td><td class="low-col">Defensive explanation</td><td class="high-col">"Where specifically?"</td></tr>
+        <tr><td>Dismissive treatment</td><td class="low-col">Tries harder to impress</td><td class="high-col">Neutral, unreactive</td></tr>
+        <tr><td>Joke at your expense</td><td class="low-col">Laugh too hard or discomfort</td><td class="high-col">Brief smile, redirect</td></tr>
+        <tr><td>Ignored in group</td><td class="low-col">Louder, more insistent</td><td class="high-col">Patient, strategic</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Layer 5: Consistency Signals</h3>
+    <p>Status is not a single event. It is a running average. The brain tracks consistency between what someone says and what they do with remarkable precision.</p>
+    <ul class="bullets">
+      <li>Changing stated opinions immediately when challenged (regardless of validity)</li>
+      <li>Saying one thing in public and behaving differently in private</li>
+      <li>Reliability failures: being late, not following through</li>
+      <li>Mood-dependent performance — signals internal instability</li>
+    </ul>
+
+    <!-- SECTION 3 -->
+    <div class="section-divider">
+      <div class="section-num">Section Three</div>
+      <h2>Behavioral Scoring Patterns</h2>
+      <div class="section-sub">Real-time calculations others run on you — and where the points go</div>
+    </div>
+
+    <p>The brain's status assessment is a composite score across six behavioral domains, updated continuously throughout every interaction.</p>
+
+    <h3>Domain 1: Entry Presence</h3>
+    <p>How you enter a physical space sets the opening bid for all subsequent status calculations. This is a priming effect — the brain anchors to the first signal and adjusts from there.</p>
+    <h4>Status-Positive Entry Pattern</h4>
+    <ul class="bullets">
+      <li>Pause briefly at the threshold — signals comfort, not urgency to be seen</li>
+      <li>Move deliberately, at 80% of your natural pace</li>
+      <li>Orient to the room rather than immediately searching for approval</li>
+      <li>Acknowledge on your own schedule, not reflexively</li>
+    </ul>
+    <h4>Status-Negative Entry Patterns</h4>
+    <ul class="bullets">
+      <li>Rushing — signals you are over-scheduled or undervalued</li>
+      <li>Immediate approval-seeking — scanning for who noticed you arrived</li>
+      <li>Apology-entry — opens with a deficit frame</li>
+      <li>Loud overcompensation — performing energy signals the opposite of confidence</li>
+    </ul>
+
+    <h3>Domain 2: Conversational Architecture</h3>
+    <ul class="bullets">
+      <li>Asking high-quality questions signals confidence in curiosity over need to perform</li>
+      <li>Comfortable with pauses — not filling every silence</li>
+      <li>Not over-explaining after making a point (state, then stop)</li>
+      <li>Challenging premises rather than only adding information</li>
+    </ul>
+
+    <h3>Domain 3: Disagreement Handling</h3>
+    <p>Most people either avoid disagreement entirely (low status) or escalate aggressively (dominance). The prestige-based model is neither.</p>
+    <h4>The High-Status Disagreement Protocol</h4>
+    <ol class="numbered">
+      <li>Receive the disagreement without visible reactivity</li>
+      <li>Confirm understanding: "So your position is X — is that right?"</li>
+      <li>State your position declaratively without over-justifying</li>
+      <li>If the challenge has merit, update publicly and own the update</li>
+      <li>If the challenge lacks merit, hold your position calmly</li>
+    </ol>
+
+    <div class="callout">
+      <div class="callout-label">The Critical Principle</div>
+      <p>Willingness to update is high status. Reflexive updating is low status. The difference is whether the update is driven by logic or by social pressure.</p>
+    </div>
+
+    <!-- SECTION 4 -->
+    <div class="section-divider">
+      <div class="section-num">Section Four</div>
+      <h2>The 12 High-Status Behavioral Defaults</h2>
+      <div class="section-sub">Patterns that compound respect over time</div>
+    </div>
+
+    <p>These are not techniques to deploy situationally. They are behavioral defaults — the automatic patterns of genuinely high-status individuals. The goal is to internalize them until they require no conscious effort.</p>
+
+    <div class="default-block">
+      <div class="default-num">Default 01</div>
+      <div class="default-title">Complete Before Responding</div>
+      <p>Listen until the other person is fully finished — including the pause after the last word. This signals that you have enough internal security that you don't need to be the first to fill silence.</p>
+    </div>
+
+    <div class="default-block">
+      <div class="default-num">Default 02</div>
+      <div class="default-title">Hold Positions Under Pressure Unless Logic Changes</div>
+      <p>Update when the reasoning changes, not when the social pressure increases. If someone simply repeats a challenge louder, that is not new information.</p>
+    </div>
+
+    <div class="default-block">
+      <div class="default-num">Default 03</div>
+      <div class="default-title">Move at Your Own Pace</div>
+      <p>Pace signals internal state. Deliberate movement signals comfort with one's position. This applies to walking, speaking, responding to messages, and making decisions.</p>
+    </div>
+
+    <div class="default-block">
+      <div class="default-num">Default 04</div>
+      <div class="default-title">Distribute Attention Selectively</div>
+      <p>Distributing attention reflexively signals that you have no selection criteria — which signals that your attention is not particularly valuable.</p>
+    </div>
+
+    <div class="default-block">
+      <div class="default-num">Default 05</div>
+      <div class="default-title">Own Ignorance Cleanly</div>
+      <p>"I don't know" is one of the highest-status phrases available. It signals security — you do not need to appear omniscient to feel secure in your position.</p>
+    </div>
+
+    <div class="default-block">
+      <div class="default-num">Default 06</div>
+      <div class="default-title">Speak Last in Group Settings</div>
+      <p>The person who speaks last reads the room, integrates perspectives, and delivers a synthesized view — a pattern that signals both intelligence and status comfort.</p>
+    </div>
+
+    <div class="default-block">
+      <div class="default-num">Default 07</div>
+      <div class="default-title">Give Credit Before Claiming It</div>
+      <p>Publicly attributing success to others does not diminish your status — it amplifies it. It signals security, leadership, and trustworthiness simultaneously.</p>
+    </div>
+
+    <div class="default-block">
+      <div class="default-num">Default 08</div>
+      <div class="default-title">Challenge Premises, Not Just Conclusions</div>
+      <p>Low-status individuals engage with conclusions. High-status individuals examine premises. "What are we assuming here?" signals qualitatively different engagement.</p>
+    </div>
+
+    <div class="default-block">
+      <div class="default-num">Default 09</div>
+      <div class="default-title">Disengage from Status Competitions</div>
+      <p>When someone is visibly competing for status, the high-status response is not to compete. Refuse to play — not with contempt, but with genuine disengagement.</p>
+    </div>
+
+    <div class="default-block">
+      <div class="default-num">Default 10</div>
+      <div class="default-title">Repair Cleanly Without Performance</div>
+      <p>When wrong, repair directly and briefly. "I was wrong about that" without performance or excessive explanation. Clean repair signals internal security.</p>
+    </div>
+
+    <div class="default-block">
+      <div class="default-num">Default 11</div>
+      <div class="default-title">Control Your First Response</div>
+      <p>The most important moment in any high-stakes interaction is the 1-2 seconds after something challenging happens. Practice deliberate latency before any significant response.</p>
+    </div>
+
+    <div class="default-block">
+      <div class="default-num">Default 12</div>
+      <div class="default-title">Set the Frame</div>
+      <p>Whoever defines the terms, the metrics, and the context of an interaction leads it. "The question I'm trying to answer is..." Frame-setting is leadership, not aggression.</p>
+    </div>
+
+    <!-- SECTION 5 -->
+    <div class="section-divider">
+      <div class="section-num">Section Five</div>
+      <h2>Status Threats and Recovery</h2>
+      <div class="section-sub">How respect is lost, damaged, and rebuilt</div>
+    </div>
+
+    <h3>How Status Is Most Commonly Lost</h3>
+
+    <h4>Loss Pattern 1: Reactive Capitulation</h4>
+    <p>Repeatedly changing positions when challenged signals that social pressure works on you. Once established, your stated positions are treated as opening bids rather than genuine views.</p>
+    <p><em>Recovery:</em> Begin holding positions under pressure. The first few instances will feel uncomfortable. The discomfort is the recalibration happening.</p>
+
+    <h4>Loss Pattern 2: Approval Accumulation</h4>
+    <p>Attempting to build status by accumulating approval from high-status individuals is immediately readable as low-status positioning. It makes you less interesting rather than more.</p>
+    <p><em>Recovery:</em> Replace approval-seeking with contribution behaviors. Ask a sharp question. Disagree genuinely with a minor point. Bring information they don't have.</p>
+
+    <h4>Loss Pattern 3: Over-Explanation</h4>
+    <p>Explaining your decisions more than the situation requires signals that you expect your position to be challenged — which signals that you believe it should be.</p>
+    <p><em>Recovery:</em> Practice the "state and stop" discipline. Make your point. Stop. Let the silence work.</p>
+
+    <h4>Loss Pattern 4: Emotional Volatility</h4>
+    <p>Disproportionate emotional reactions signal that your internal calibration is unstable and externally dependent. These events update everyone's model of you significantly.</p>
+    <p><em>Recovery:</em> The pause protocol. Every time you feel a reactive impulse, insert a deliberate pause before any response.</p>
+
+    <h4>Loss Pattern 5: Value/Behavior Inconsistency</h4>
+    <p>Once observers register that your behavior does not match your stated values, every subsequent statement is evaluated through that filter.</p>
+    <p><em>Recovery:</em> Address inconsistencies through observable behavior change — not statements about your values, but behavioral demonstration.</p>
+
+    <h3>The Status Recovery Protocol</h3>
+    <ol class="numbered">
+      <li>Acknowledge the actual damage to yourself first, with specificity</li>
+      <li>Identify the specific behavior — not "I was too emotional" but the exact pattern</li>
+      <li>Make one clean repair — direct acknowledgment closes the loop without performance</li>
+      <li>Behavioral change, not announcement — let the behavioral signal carry the message</li>
+      <li>Consistency window — status repairs on a 30–60 day behavioral consistency horizon</li>
+    </ol>
+
+    <!-- SECTION 6 -->
+    <div class="section-divider">
+      <div class="section-num">Section Six</div>
+      <h2>Environmental Status Calibration</h2>
+      <div class="section-sub">How context changes the scoring rules</div>
+    </div>
+
+    <p>Status is not computed against an absolute standard. It is computed against the contextual baseline of the environment. Understanding how context shifts the scoring rules allows you to calibrate rather than apply a single behavioral template.</p>
+
+    <h3>High-Stakes Professional Environments</h3>
+    <ul class="bullets">
+      <li>Precision and economy of language carry maximum weight</li>
+      <li>Meeting commitments at 100% reliability is the core prestige signal</li>
+      <li>Being right more often than wrong is the compounding asset</li>
+      <li>Asking high-quality questions over making statements when uncertain</li>
+    </ul>
+
+    <h3>Social and Peer Environments</h3>
+    <ul class="bullets">
+      <li>Warmth and generosity carry more weight than in professional contexts</li>
+      <li>The ability to make others feel seen is a high-prestige behavior</li>
+      <li>Humor used as connection rather than dominance is a status amplifier</li>
+      <li>Contribution to group energy without monopolizing it</li>
+    </ul>
+
+    <h3>Hierarchically Asymmetric Environments</h3>
+    <h4>Operating Upward (with high-status others)</h4>
+    <ul class="bullets">
+      <li>Do not perform humility — it signals their status should diminish you</li>
+      <li>Engage as a peer in substance while acknowledging structural difference in process</li>
+      <li>Bring genuine value — the highest status move in asymmetric interactions</li>
+    </ul>
+    <h4>Operating Downward (with lower-status others)</h4>
+    <ul class="bullets">
+      <li>Generosity of attention is one of the highest prestige signals available</li>
+      <li>Genuine interest in their perspective builds loyalty that compounds</li>
+      <li>Not using structural power to extract compliance (dominance) but building genuine investment (prestige)</li>
+    </ul>
+
+    <!-- SECTION 7 -->
+    <div class="section-divider">
+      <div class="section-num">Section Seven</div>
+      <h2>The Status Audit</h2>
+      <div class="section-sub">A six-domain self-assessment and calibration protocol</div>
+    </div>
+
+    <p>Use this audit to generate an honest baseline. For each domain, rate each item 1–10. Your two lowest-scoring domains are your highest-leverage improvement opportunities.</p>
+
+    <div class="audit-domain">
+      <div class="audit-header">
+        <div class="audit-domain-num">1</div>
+        <h4>Somatic Presence Audit</h4>
+      </div>
+      <div class="audit-body">
+        <ul class="checklist">
+          <li>I move at a deliberate, unhurried pace in social and professional settings</li>
+          <li>I maintain comfortable eye contact during key statements without staring</li>
+          <li>I occupy space comfortably without physical contraction</li>
+          <li>My voice pace slows (rather than accelerates) in high-pressure moments</li>
+          <li>I minimize excess movement — fidgeting, self-touching, over-gesturing</li>
+        </ul>
+        <div class="audit-score-line">Domain 1 Score: ___ / 50</div>
+      </div>
+    </div>
+
+    <div class="audit-domain">
+      <div class="audit-header">
+        <div class="audit-domain-num">2</div>
+        <h4>Attentional Discipline Audit</h4>
+      </div>
+      <div class="audit-body">
+        <ul class="checklist">
+          <li>I distribute attention based on genuine engagement, not reflexive response</li>
+          <li>I do not laugh at things I don't find funny to signal approval</li>
+          <li>I complete listening before formulating my response</li>
+          <li>I am comfortable not seeking acknowledgment from high-status individuals</li>
+          <li>I direct attention to ideas and outcomes rather than managing perceptions</li>
+        </ul>
+        <div class="audit-score-line">Domain 2 Score: ___ / 50</div>
+      </div>
+    </div>
+
+    <div class="audit-domain">
+      <div class="audit-header">
+        <div class="audit-domain-num">3</div>
+        <h4>Linguistic Precision Audit</h4>
+      </div>
+      <div class="audit-body">
+        <ul class="checklist">
+          <li>I use declarative rather than interrogative framing when stating opinions</li>
+          <li>I avoid pre-emptive apology before making points</li>
+          <li>I make statements without excessive hedging qualifiers</li>
+          <li>I stop after making a point rather than over-explaining</li>
+          <li>My speech pace in high-pressure situations is deliberate rather than rushed</li>
+        </ul>
+        <div class="audit-score-line">Domain 3 Score: ___ / 50</div>
+      </div>
+    </div>
+
+    <div class="audit-domain">
+      <div class="audit-header">
+        <div class="audit-domain-num">4</div>
+        <h4>Social Friction Response Audit</h4>
+      </div>
+      <div class="audit-body">
+        <ul class="checklist">
+          <li>When challenged, I pause before responding rather than reacting immediately</li>
+          <li>I hold positions under social pressure unless the logic genuinely changes</li>
+          <li>I do not escalate when challenged — I engage or decline to engage</li>
+          <li>I am not visibly destabilized by dismissive treatment</li>
+          <li>I respond to criticism with curiosity rather than defensiveness</li>
+        </ul>
+        <div class="audit-score-line">Domain 4 Score: ___ / 50</div>
+      </div>
+    </div>
+
+    <div class="audit-domain">
+      <div class="audit-header">
+        <div class="audit-domain-num">5</div>
+        <h4>Consistency Audit</h4>
+      </div>
+      <div class="audit-body">
+        <ul class="checklist">
+          <li>My public positions match my private behavior</li>
+          <li>I follow through on stated commitments at a high rate</li>
+          <li>My performance quality is consistent across good and bad days</li>
+          <li>I update positions based on logic rather than social pressure</li>
+          <li>I am the same person in asymmetric interactions — up and down the hierarchy</li>
+        </ul>
+        <div class="audit-score-line">Domain 5 Score: ___ / 50</div>
+      </div>
+    </div>
+
+    <div class="audit-domain">
+      <div class="audit-header">
+        <div class="audit-domain-num">6</div>
+        <h4>Repair and Recovery Audit</h4>
+      </div>
+      <div class="audit-body">
+        <ul class="checklist">
+          <li>I acknowledge mistakes and errors cleanly and briefly</li>
+          <li>I do not perform apology or seek excessive reassurance after errors</li>
+          <li>I repair interpersonal damage directly rather than avoiding it</li>
+          <li>I identify specific behavioral patterns rather than vague self-criticism</li>
+          <li>I give credit and attribute success to others readily and specifically</li>
+        </ul>
+        <div class="audit-score-line">Domain 6 Score: ___ / 50</div>
+      </div>
+    </div>
+
+    <h4>Interpreting Your Scores</h4>
+    <div class="score-card">
+      <div class="score-card-header">Score Interpretation Guide</div>
+      <div class="score-row">
+        <span class="score-indicator si-green"></span>
+        <span class="score-range">41 – 50</span>
+        <span class="score-label">Strong — this domain is a status asset</span>
+      </div>
+      <div class="score-row">
+        <span class="score-indicator si-lime"></span>
+        <span class="score-range">31 – 40</span>
+        <span class="score-label">Solid — minor calibration needed</span>
+      </div>
+      <div class="score-row">
+        <span class="score-indicator si-yellow"></span>
+        <span class="score-range">21 – 30</span>
+        <span class="score-label">Developing — consistent improvement opportunity</span>
+      </div>
+      <div class="score-row">
+        <span class="score-indicator si-orange"></span>
+        <span class="score-range">11 – 20</span>
+        <span class="score-label">Priority — this domain is likely costing you status</span>
+      </div>
+      <div class="score-row">
+        <span class="score-indicator si-red"></span>
+        <span class="score-range">1 – 10</span>
+        <span class="score-label">Critical — immediate behavioral intervention needed</span>
+      </div>
+    </div>
+
+    <!-- SECTION 8 -->
+    <div class="section-divider">
+      <div class="section-num">Section Eight</div>
+      <h2>The 30-Day Prestige Protocol</h2>
+      <div class="section-sub">A structured behavioral calibration plan</div>
+    </div>
+
+    <p>This protocol installs the four highest-leverage status behaviors through deliberate practice. Each week adds a new behavior while maintaining prior weeks.</p>
+
+    <div class="week-block">
+      <div class="week-tag">Week 1</div>
+      <h3>The Pause Protocol</h3>
+      <p>Insert a 1–3 second deliberate pause before responding to any significant social input — questions, challenges, requests, criticism.</p>
+      <h4>Daily Implementation</h4>
+      <ul class="bullets">
+        <li>Before responding to the first question in any meeting: pause, breathe, respond</li>
+        <li>When challenged: stop, let 2 seconds pass, then engage</li>
+        <li>When asked for a decision you haven't made: "Let me think about that"</li>
+      </ul>
+      <p style="font-size:13px;color:var(--gold-dk);font-weight:600;">Installs: Reaction latency as a default — the gap between stimulus and response that signals internal security.</p>
+    </div>
+
+    <div class="week-block">
+      <div class="week-tag">Week 2</div>
+      <h3>The State-and-Stop Discipline</h3>
+      <p>After making any point, statement, or opinion — stop. Do not fill the subsequent silence with elaboration or justification unless directly asked.</p>
+      <h4>Daily Implementation</h4>
+      <ul class="bullets">
+        <li>After making a recommendation: state it once, then stop</li>
+        <li>After being challenged: hold the pause, then respond once — not three times</li>
+        <li>After a disagreement: state your position, then stop</li>
+      </ul>
+      <p style="font-size:13px;color:var(--gold-dk);font-weight:600;">Installs: Economy of language — statements that don't trail off into self-undermining elaboration.</p>
+    </div>
+
+    <div class="week-block">
+      <div class="week-tag">Week 3</div>
+      <h3>Attentional Discipline</h3>
+      <p>For one full day each week, track every instance of reflexive approval behavior and consciously interrupt the pattern.</p>
+      <h4>Daily Implementation</h4>
+      <ul class="bullets">
+        <li>In conversations: give attention when genuinely engaged, not as performance</li>
+        <li>In group settings: contribute when you have something to add, not to signal participation</li>
+        <li>With compliments: be specific and genuine, not reflexive</li>
+      </ul>
+      <p style="font-size:13px;color:var(--gold-dk);font-weight:600;">Installs: Attentional selectivity — the signal that your engagement and approval mean something.</p>
+    </div>
+
+    <div class="week-block">
+      <div class="week-tag">Week 4</div>
+      <h3>The Frame-Setting Practice</h3>
+      <p>In three interactions per week, set the frame explicitly before engaging.</p>
+      <h4>Daily Implementation</h4>
+      <ul class="bullets">
+        <li>In meetings: offer a framing statement before the group settles into someone else's</li>
+        <li>In disagreements: reframe the terms — "I think the real question is..."</li>
+        <li>In negotiations: establish your evaluation criteria before the other party establishes theirs</li>
+      </ul>
+      <p style="font-size:13px;color:var(--gold-dk);font-weight:600;">Installs: Habitual frame-setting — the automatic leadership behavior that defines interactions rather than responding to them.</p>
+    </div>
+
+    <!-- SECTION 9 -->
+    <div class="section-divider">
+      <div class="section-num">Summary</div>
+      <h2>The Complete Status Map</h2>
+      <div class="section-sub">Five principles that govern everything</div>
+    </div>
+
+    <div class="principle">
+      <div class="principle-num">1</div>
+      <div class="principle-content">
+        <h4>Status Is Behavioral, Not Positional</h4>
+        <p>Title, money, and credentials create the appearance of status but not the reality. Behavioral signals are assessed continuously and override credential signals in most real-time interactions.</p>
+      </div>
+    </div>
+
+    <div class="principle">
+      <div class="principle-num">2</div>
+      <div class="principle-content">
+        <h4>Prestige Compounds. Dominance Decays.</h4>
+        <p>Every prestige-based behavior — genuine contribution, consistency, clean repair, generous acknowledgment — adds to a growing account. Every dominance-based behavior creates temporary compliance at the cost of long-term respect erosion.</p>
+      </div>
+    </div>
+
+    <div class="principle">
+      <div class="principle-num">3</div>
+      <div class="principle-content">
+        <h4>Reactivity Is the Universal Low-Status Signal</h4>
+        <p>The single most readable status signal is how strongly external events move you. The more your internal state is shaped by external inputs, the lower the status signal you broadcast. Internal stability is the foundation of all other status signals.</p>
+      </div>
+    </div>
+
+    <div class="principle">
+      <div class="principle-num">4</div>
+      <div class="principle-content">
+        <h4>Consistency Is the Delivery Mechanism</h4>
+        <p>Intelligence, competence, and good intentions produce no status benefit without behavioral consistency. The brain tracks pattern, not performance. One exceptional interaction is a data point. Twelve consistent interactions are a reputation.</p>
+      </div>
+    </div>
+
+    <div class="principle">
+      <div class="principle-num">5</div>
+      <div class="principle-content">
+        <h4>The Frame Holder Leads</h4>
+        <p>Whoever defines the terms of an interaction leads it. Frame-setting is the most leverage-efficient status behavior available — it shapes every subsequent exchange without requiring direct competition.</p>
+      </div>
+    </div>
+
+    <h3>The Core Status Checklist</h3>
+    <p>Use this before entering any high-stakes social or professional environment.</p>
+
+    <h4>Pre-Entry Calibration</h4>
+    <ul class="checklist">
+      <li>Pace slowed to 80% of natural</li>
+      <li>Physical expansion — not contraction</li>
+      <li>Internal orientation to room, not to being seen</li>
+      <li>First statement prepared as declarative, not interrogative</li>
+    </ul>
+
+    <h4>In-Interaction Monitoring</h4>
+    <ul class="checklist">
+      <li>Listening fully before formulating response</li>
+      <li>Pausing before responding to friction</li>
+      <li>Stating without over-explaining</li>
+      <li>Attention directed by genuine engagement</li>
+    </ul>
+
+    <h4>Post-Interaction Review</h4>
+    <ul class="checklist">
+      <li>Identified any reactive capitulations</li>
+      <li>Noted over-explanation patterns</li>
+      <li>Assessed consistency with prior positions</li>
+      <li>Identified opportunities to set frame earlier</li>
+    </ul>
+
+  </div><!-- end .content -->
+
+  <!-- CLOSING -->
+  <div class="closing">
+    <div class="closing-rule"></div>
+    <h2>The scoring system doesn't care whether you know the rules. But you do now.</h2>
+    <p>Every person you respect — those who seem to command rooms without effort, who hold their positions with ease, who build trust that survives context changes — operates from the principles in this document. The patterns are learnable. The calibration is available to anyone willing to be honest about where they currently are.</p>
+
+    <div class="closing-actions">
+      <div style="font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;">Start Here</div>
+      <div class="action-steps">
+        <div class="action-step"><span class="step-dot"></span><span>Identify your two lowest audit scores — those are your highest-leverage opportunities</span></div>
+        <div class="action-step"><span class="step-dot"></span><span>Practice the pause protocol for the next 30 days without exception</span></div>
+        <div class="action-step"><span class="step-dot"></span><span>Set the frame deliberately in your next three interactions</span></div>
+      </div>
+    </div>
+
+    <div class="closing-brand">
+      <span class="brand">LAZY SCHOLAR PH</span>
+      <span class="copy">© 2026 · Premium Digital Content · For personal use only</span>
+    </div>
+  </div>
+
+</div><!-- end .page -->
+</body>
+</html>
