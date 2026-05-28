@@ -1,4 +1,4 @@
-Status: READY_FOR_WRITING
+Status: COMPLETED
 
 Title: Status Mechanics: The Hidden Scoring System Running Every Social Interaction
 
@@ -28,3 +28,9 @@ Practical Applications:
 - Room-entry and conversation-opening calibration guide
 
 Score: 94/100
+
+Completed: 2026-05-28
+Output files:
+- ai-pipeline/drafts/2026-05-28-article.md
+- ai-pipeline/drafts/2026-05-28-article.html
+- ai-pipeline/pdfs/2026-05-28-premium.pdf
